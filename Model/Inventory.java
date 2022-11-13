@@ -1,4 +1,4 @@
-package models;
+package Model;
 
 public class Inventory {
     public String[] contents;
@@ -6,7 +6,7 @@ public class Inventory {
 
     }
 
-    @java.lang.Override
+    @Override
     public String toString() {
         return null;
     }

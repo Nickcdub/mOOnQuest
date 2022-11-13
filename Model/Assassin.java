@@ -5,14 +5,14 @@ import Model.AbstractClasses.Hero;
 
 import java.sql.*;
 
-public class Mender extends Hero {
+public class Assassin extends Hero {
     //public Type field; needs rework
 
-    public Mender() throws SQLException {
-        loadMender();
+    public Assassin() throws SQLException {
+        loadRogue();
     }
 
-    private void loadMender() throws SQLException {
+    private void loadRogue() throws SQLException {
         String jdbcURL = "jdbc:sqlite:DungeonAdventure.sqlite";
 
         Connection connection = DriverManager.getConnection(jdbcURL);
@@ -20,7 +20,7 @@ public class Mender extends Hero {
         Statement statement = connection.createStatement();
         statement.setQueryTimeout(30);  // set timeout to 30 sec.
 
-        ResultSet rs = statement.executeQuery("SELECT * FROM hero_table WHERE NAME ='MENDER' ");
+        ResultSet rs = statement.executeQuery("SELECT * FROM hero_table WHERE NAME ='ASSASSIN' ");
 
         heroType = rs.getString("NAME");
         hitPoints= MAX_HEALTH = rs.getInt("HP");
@@ -33,7 +33,18 @@ public class Mender extends Hero {
 
     @Override
     public void ultimate(Character defender) {
-        Heal(75,65);
+        int ultChance = (int) Math.round(Math.random()*100);
+        if(ultChance<20) {return;}
+        else if(ultChance<60){
+            attack(defender);
+            return;
+        }else if(ultChance<=100){
+            attack(defender);
+            attack(defender);
+            return;
+        }else{
+            throw new NumberFormatException("ultChance must be less than 100, it is: "+ultChance);
+        }
     }
 
     @Override

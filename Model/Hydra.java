@@ -1,7 +1,8 @@
-package models;
+package Model;
 
-import models.AbstractClasses.Guardian;
-import models.Interfaces.Healable;
+import Model.AbstractClasses.Character;
+import Model.AbstractClasses.Guardian;
+import Model.Interfaces.Healable;
 
 public class Hydra extends Guardian implements Healable {
     public Hydra() {
@@ -9,6 +10,11 @@ public class Hydra extends Guardian implements Healable {
     }
     @java.lang.Override
     public void Heal(int max, int min) {
+
+    }
+
+    @Override
+    public void ultimate(Character defender) {
 
     }
 }

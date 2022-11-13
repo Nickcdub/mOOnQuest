@@ -1,15 +1,21 @@
-package models;
+package Model;
 
-import models.AbstractClasses.Guardian;
-import models.Interfaces.Blockable;
+import Model.AbstractClasses.Character;
+import Model.AbstractClasses.Guardian;
+import Model.Interfaces.Blockable;
 
 public class Cerberus extends Guardian implements Blockable {
     public Cerberus() {
 
     }
 
-    @java.lang.Override
+    @Override
     public void Block() {
+        System.out.println("Block");
+    }
+
+    @Override
+    public void ultimate(Character defender) {
 
     }
 }

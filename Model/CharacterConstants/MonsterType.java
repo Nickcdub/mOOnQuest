@@ -1,4 +1,4 @@
-package models.CharacterConstants;
+package Model.CharacterConstants;
 
 public enum MonsterType {
     OGRE,

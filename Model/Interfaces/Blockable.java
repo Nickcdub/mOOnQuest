@@ -1,7 +1,7 @@
-package models.Interfaces;
+package Model.Interfaces;
 
 public interface Blockable {
-    public float BlockChance = 0; //needs rework
+    float blockChance = 0;
 
     public void Block();
 }

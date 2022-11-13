@@ -1,6 +1,7 @@
-package models;
+package Model;
 
-import models.AbstractClasses.Hero;
+import Model.AbstractClasses.Character;
+import Model.AbstractClasses.Hero;
 
 public class Rogue extends Hero {
     //public Type field; needs rework
@@ -16,6 +17,11 @@ public class Rogue extends Hero {
 
     @java.lang.Override
     public void Heal(int max, int min) {
+
+    }
+
+    @Override
+    public void ultimate(Character defender) {
 
     }
 }
