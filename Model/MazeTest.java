@@ -10,7 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class MazeTest {
-
+ //This will test region individually from maze, however this requires region to become static
+    // Region can be static for testing but cannot remain static for serialization.
     @Test
     @DisplayName("Test Top RemoveWalls")
     public void testTopWalls() {
@@ -106,5 +107,9 @@ public class MazeTest {
             maze2.getRegion(2,1).visited = true;
 
             assertEquals(null,maze2.getRegion(1,1).randomNeighbor(),"Visited Neighbors Test");
+
+            maze2.getRegion(0,0).visited = false;
+            maze1.getRegion(0,0).visited = true;
+            assertEquals(maze2.getRegion(0,0),maze2.getRegion(0,1).randomNeighbor(),"1 Neighbor Test");
         }
     }
