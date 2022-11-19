@@ -4,9 +4,9 @@ import java.util.*;
 
 public class Maze {
     //We want grid to be an ArrayList so that we can take advantage of its dynamic methods.
-    private static List<Region> myGrid;
-    private static int myRows;
-    private static int myCols;
+    private final List<Region> myGrid;
+    private final int myRows;
+    private final int myCols;
     private final Stack<Region> myBreadCrumbs;
 
     //The constructor will:
@@ -16,22 +16,22 @@ public class Maze {
     // - Call the generate method to march through region walls and form a maze
 
 
-     public Maze(final int rows, final int cols) {
-         myGrid = new ArrayList<Region>();
+     public Maze(final int theRows, final int theCols) {
+         myGrid = new ArrayList<>();
 
-         myRows = rows;
-         myCols = cols;
-         myBreadCrumbs = new Stack<Region>();
+         myRows = theRows;
+         myCols = theCols;
+         myBreadCrumbs = new Stack<>();
 
          initialize(myGrid);
          generate();
      }
 
-     //This method will fill the grid with default regions
-    private static void initialize(List<Region> grid){
+     //This method will fill the myGrid with default regions
+    private void initialize(List<Region> myGrid){
         for (int i = 0; i < myRows; i++) {
             for (int j = 0; j < myCols; j++) {
-               grid.add(new Region(i,j));
+               myGrid.add(new Region(i,j));
             }
         }
     }
@@ -57,7 +57,7 @@ public class Maze {
     }
 
     //This private method will be used by randomNeighbor within Region in order to find index regions within grid
-    public static int index(final int theRowIndex, final int theColumnIndex){
+    private int index(final int theRowIndex, final int theColumnIndex){
         //This will let the randomNeighbor method know if the desired index is out of bounds for the grid
         if(theRowIndex<0 || theColumnIndex<0 || theRowIndex> myRows -1 || theColumnIndex> myCols -1) return -1;
         //This method returns the algorithm column + (row * #of columns in a row)
@@ -92,31 +92,40 @@ public class Maze {
        }
     }
 
-    public Region getRegion(final int theRow, final int theColumn){
+     Region getRegion(final int theRow, final int theColumn){
         return myGrid.get(index(theRow,theColumn));
+    }
+
+    public boolean[] getRegionWalls(int row,int col){
+         return getRegion(row,col).getWalls();
     }
 
     public int getRows(){
         return myRows;
     }
 
-     public int getColumns(){
+    public int getColumns(){
          return myCols;
      }
 
+     public List<Region> getGrid(){
+         return myGrid;
+     }
+
     //This data structure will hold Regions that will act as nodes to our grid
-    public static class Region {
+    class Region {
         final int row, col;
         //Visited and Walls must be able to change as our generate method marches through regions
          public boolean visited;
          //make this private
-        private boolean [] walls;
+        private final boolean [] walls;
         private boolean potion;
         private boolean trap;
         private boolean monster;
 
-        //Region will be private and should only be accessed by Model.Maze
-       public Region(final int i, final int j) {
+        //Region will be private and should only be accessed through the maze.
+        //This is necessary to allow the maze instance to own regions
+       private Region(final int i, final int j) {
             row = i;
             col = j;
             //When regions are initialized, they are unrefined and have not yet been visited by the generator
@@ -130,12 +139,12 @@ public class Maze {
            monster = Math.random()<0.25;
         }
 
-        public boolean[] getWalls(){
+        private boolean[] getWalls(){
            return walls;
         }
 
         //This private method: randomNeighbor method will give generator a random region to mark as next
-         public Region randomNeighbor() {
+         private Region randomNeighbor() {
             var neighbors = new ArrayList<Region>();
             //Use index method in Model.Maze to locate adjacent regions
 
