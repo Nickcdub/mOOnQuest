@@ -1,9 +1,9 @@
 package Model.Interfaces;
 
 public interface Blockable {
-    float blockChance = 0;
+    float myBlockChance = 0;
     
-    static void Block(){
-        
+     default int block(int theDamage){
+        return 0;
     }
 }

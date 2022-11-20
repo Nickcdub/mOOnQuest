@@ -1,10 +1,15 @@
 package Model.Interfaces;
 
+import java.util.Random;
+
 public interface Healable {
-    //maxHealth: keep track of health cap ,so we don't heal too much.
-    int maxHealth = 0;
 
-    default void Heal(int max, int min){
-
+    //This form of heal will be used by potions and ultimate skills
+    default String heal(int myMax, int myMin){
+        return null;
+    }
+    //This form of heal will be used by monsters that regenerate health automatically.
+    default String heal(){
+        return null;
     }
 }

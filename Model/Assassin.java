@@ -4,17 +4,19 @@ import Model.AbstractClasses.Character;
 import Model.AbstractClasses.Hero;
 
 import java.sql.*;
+import java.util.Random;
 
 public class Assassin extends Hero {
-    //public Type field; needs rework
 
+    //load Assassin stats
     public Assassin() throws SQLException {
-        loadRogue();
+        loadAssassin();
     }
 
-    private void loadRogue() throws SQLException {
+    private void loadAssassin() throws SQLException {
         String jdbcURL = "jdbc:sqlite:DungeonAdventure.sqlite";
 
+        //Establish conection to driver url
         Connection connection = DriverManager.getConnection(jdbcURL);
 
         Statement statement = connection.createStatement();
@@ -22,28 +24,31 @@ public class Assassin extends Hero {
 
         ResultSet rs = statement.executeQuery("SELECT * FROM hero_table WHERE NAME ='ASSASSIN' ");
 
-        heroType = rs.getString("NAME");
-        hitPoints= MAX_HEALTH = rs.getInt("HP");
-        attackSpeed = rs.getInt("SPEED");
-        hitChance = rs.getFloat("HITCHANCE");
-        blockChance = rs.getFloat("BLOCKCHANCE");
+        //Load hero stats from the database
+       loadHero(connection,rs);
 
+       //close connection
         connection.close();
     }
 
     @Override
-    public void ultimate(Character defender) {
-        int ultChance = (int) Math.round(Math.random()*100);
-        if(ultChance<20) {return;}
-        else if(ultChance<60){
-            attack(defender);
-            return;
-        }else if(ultChance<=100){
-            attack(defender);
-            attack(defender);
-            return;
-        }else{
-            throw new NumberFormatException("ultChance must be less than 100, it is: "+ultChance);
+    public String ultimate(Character theDefender) {
+       int hitcount = 0;
+       String result = null;
+
+       if(Math.random()> ultChance) hitcount++;
+        if(Math.random()> ultChance) hitcount++;
+
+        Random r = new Random();
+
+
+        switch(hitcount){
+            case 0 -> result = myName+" Missed Rhythm Echo...\n"; //failed
+            case 1 ->  result = "Partial Success:Single Hit!\n"+theDefender.damage(r.nextInt(myMaxDmg - myMinDmg) + myMinDmg);//partial success
+            case 2 ->  result = "Complete Success: Double Hit!\n"+theDefender.damage(r.nextInt(myMaxDmg - myMinDmg) + myMinDmg)+theDefender.damage(r.nextInt(myMaxDmg - myMinDmg) + myMinDmg);//complete success
         }
+
+        if (result==null) throw new NumberFormatException("HitCount should be >=2, hitcount: "+hitcount);
+        else return result;
     }
 }
