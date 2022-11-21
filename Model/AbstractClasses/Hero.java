@@ -13,6 +13,7 @@ import java.util.Random;
 public abstract class Hero extends SpecialCharacter implements Blockable, Healable {
     protected final Inventory myInventory;
     protected float myBlockChance;
+    protected int myVision;
 
     protected Hero() {
         myInventory = new Inventory();
@@ -52,9 +53,14 @@ public abstract class Hero extends SpecialCharacter implements Blockable, Healab
         myMinDmg = rs.getInt("MINDMG");
         myMaxDmg = rs.getInt("MAXDMG");
         ultChance = rs.getFloat("ULTCHANCE");
+        myVision = 0;
     }
 
     public String toString() {
         return "CLASS:" + myName + " HP:" + myHitPoints + "/" + MAX_HEALTH + " SPEED:" + myAttackSpeed + " ACCURACY:" + myHitChance + " PROTECTION:" + myBlockChance;
+    }
+
+    public void setVision(int theVision) {
+        this.myVision = theVision;
     }
 }

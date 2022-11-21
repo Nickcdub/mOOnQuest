@@ -1,5 +1,3 @@
-
-
 package Model.AbstractClasses;
 
 public abstract class SpecialCharacter extends Character {

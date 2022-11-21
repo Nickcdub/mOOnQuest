@@ -51,4 +51,9 @@ public class Assassin extends Hero {
         if (result==null) throw new NumberFormatException("HitCount should be >=2, hitcount: "+hitcount);
         else return result;
     }
+
+    @Override
+    public void Block() {
+
+    }
 }
