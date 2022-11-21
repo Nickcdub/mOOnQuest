@@ -10,6 +10,6 @@ public class HealthPotion extends Item {
 
     @Override
     public void useEffect(Hero theHero) {
-        theHero.Heal(50,30);
+        theHero.heal(50,30);
     }
 }
