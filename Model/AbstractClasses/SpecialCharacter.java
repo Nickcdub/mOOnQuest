@@ -1,8 +1,10 @@
-
 package Model.AbstractClasses;
 
 public abstract class SpecialCharacter extends Character {
-    public String specialSkill;
+    public float ultChance;
 
-    public abstract void ultimate(Character defender);
+    public SpecialCharacter() {
+    }
+
+    public abstract String ultimate(Character theDefender);
 }

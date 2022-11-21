@@ -4,14 +4,16 @@ import Model.AbstractClasses.Character;
 import Model.AbstractClasses.Hero;
 
 import java.sql.*;
+import java.util.Random;
 
 public class Mender extends Hero {
-    //public Type field; needs rework
 
+    //Load mender stats
     public Mender() throws SQLException {
         loadMender();
     }
 
+    //Load hero stats for methods
     private void loadMender() throws SQLException {
         String jdbcURL = "jdbc:sqlite:DungeonAdventure.sqlite";
 
@@ -22,18 +24,16 @@ public class Mender extends Hero {
 
         ResultSet rs = statement.executeQuery("SELECT * FROM hero_table WHERE NAME ='MENDER' ");
 
-        heroType = rs.getString("NAME");
-        hitPoints= MAX_HEALTH = rs.getInt("HP");
-        attackSpeed = rs.getInt("SPEED");
-        hitChance = rs.getFloat("HITCHANCE");
-        blockChance = rs.getFloat("BLOCKCHANCE");
+        loadHero(connection, rs);
 
         connection.close();
     }
 
+    //Ultimate heals mender between 65 and 75 health
     @Override
-    public void ultimate(Character defender) {
-        Heal(75,65);
+    public String ultimate(Character theDefender) {
+        if (Math.random() > ultChance) return myName + " Missed Heal...";
+        return heal(75, 65);
     }
 
     @Override

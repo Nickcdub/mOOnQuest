@@ -1,40 +1,60 @@
 package Model.AbstractClasses;
 
-import Model.AbstractClasses.SpecialCharacter;
 import Model.Interfaces.Blockable;
 import Model.Interfaces.Healable;
 import Model.Inventory;
 
-import java.util.List;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import java.util.Random;
 
 public abstract class Hero extends SpecialCharacter implements Blockable, Healable {
-    public List<String> inventory;
-    public float blockChance;
-    public String heroType;
+    protected final Inventory myInventory;
+    protected float myBlockChance;
 
-
-    public int Block(int damage){
-        return Math.random()<=blockChance ? 0:damage;
-    }
-    public void damage(int damage){
-        damage=Block(damage);
-        hitPoints=hitPoints-damage;
+    protected Hero() {
+        myInventory = new Inventory();
     }
 
-    public String getInventory() {
-        return inventory.toString();
+
+    public String damage(int theDamage) {
+        theDamage = block(theDamage);
+        myHitPoints = myHitPoints - theDamage;
+        return theDamage == 0 ? myName + " blocked all incoming damage!\n" : myName + " took " + theDamage + " damage!\n";
     }
 
-    public void Heal(int Max, int Min){
+    @Override
+    public int block(int theDamage) {
+        return Math.random() <= myBlockChance ? 0 : theDamage;
+    }
+
+    public String getMyInventory() {
+        return myInventory.toString();
+    }
+
+    public String heal(int myMax, int myMin) {
         Random r = new Random();
-        int result = r.nextInt(Max-Min) + Min;
+        int result = r.nextInt(myMax - myMin) + myMin;
 
         //If hitpoints are healed beyond maxHealth, reset back at maxHealth;
-        hitPoints = hitPoints+result<MAX_HEALTH ? hitPoints+result:MAX_HEALTH;
+        myHitPoints = myHitPoints + result < MAX_HEALTH ? myHitPoints + result : MAX_HEALTH;
+        return myHitPoints == MAX_HEALTH ? myName + " healed to Max Health!" : myName + " healed for " + result + " HP!\n";
     }
 
-    public String toString(){
-        return "CLASS:"+ heroType+" HP:"+hitPoints+"/"+MAX_HEALTH+" SPEED:"+attackSpeed+" ACCURACY:"+hitChance+" PROTECTION:"+blockChance;
+    protected void loadHero(Connection connection, ResultSet rs) throws SQLException {
+        myName = rs.getString("NAME");
+        myHitPoints = MAX_HEALTH = rs.getInt("HP");
+        myAttackSpeed = rs.getInt("SPEED");
+        myHitChance = rs.getFloat("HITCHANCE");
+        myBlockChance = rs.getFloat("BLOCKCHANCE");
+        myMinDmg = rs.getInt("MINDMG");
+        myMaxDmg = rs.getInt("MAXDMG");
+        ultChance = rs.getFloat("ULTCHANCE");
+    }
+
+    public String toString() {
+        return "CLASS:" + myName + " HP:" + myHitPoints + "/" + MAX_HEALTH + " SPEED:" + myAttackSpeed + " ACCURACY:" + myHitChance + " PROTECTION:" + myBlockChance;
     }
 }
