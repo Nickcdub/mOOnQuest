@@ -1,0 +1,1 @@
+This directory holds tests for model classes. These tests should create errors when imported, the only thing that should be required to fix errors is to change visibility on some tests methods. 
