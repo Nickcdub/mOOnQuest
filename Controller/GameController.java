@@ -76,7 +76,7 @@ public class GameController {
         String input;
         //First find turn order: enemy cannot have more turns than hero, if hero.speed >= 2*defender.speed, hero gets two turns
         int heroTurns = (int) Math.floor(myHero.getMyAttackSpeed() / (2 * theDefender.getMyAttackSpeed()));
-        heroTurns = heroTurns < 0 ? 1 : heroTurns;
+        heroTurns = heroTurns <= 0 ? 1 : heroTurns;
 
         //This is where battling happens.
         while (myHero.getHealth() > 0 && theDefender.getHealth() > 0) {
@@ -120,7 +120,7 @@ public class GameController {
         String input;
         //First find turn order: enemy cannot have more turns than hero, if hero.speed >= 2*defender.speed, hero gets two turns
         int heroTurns = (int) Math.floor(myHero.getMyAttackSpeed() / (2 * theDefender.getMyAttackSpeed()));
-        heroTurns = heroTurns < 0 ? 1 : heroTurns;
+        heroTurns = heroTurns <= 0 ? 1 : heroTurns;
 
         int turnCounter = 0;
         //This is where battling happens.
