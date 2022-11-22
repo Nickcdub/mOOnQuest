@@ -137,6 +137,56 @@ public class Maze {
             potion = Math.random() < 0.75;
             trap = Math.random() < 0.1;
             monster = Math.random() < 0.25;
+
+            //extend this to auto-fill the region with the item/trap/monster
+            //if potion true then 95% chance to create health potion, 5% vision potion
+            //if monster true then 50% weakest 30% next one and 20% the strongest
+            //if trap true then create a trap
+            //all will be stored in a hashmap with string and object
+
+            //initialise the hash map that contains the region content
+            myRegionContent = new HashMap<String, Object>();
+            myRegionContent.put("Potion", null);
+            myRegionContent.put("Trap", null);
+            myRegionContent.put("Monster", null);
+
+            //check if potions, traps and monsters are to be added
+            if(potion) {
+                //health potions have 95% chance of spawning since they are more useful and the vision potion lasts for the entire run
+                boolean potionType = Math.random() < 0.95;
+                myRegionContent.put("Potion", potionType ? new HealthPotion() : new VisionPotion());
+            }
+            if(trap) {
+                myRegionContent.put("Trap", Boolean.valueOf(true));
+            }
+            if(monster) {
+                try {
+                    double monsterType = Math.random();
+                    if (monsterType > 0.7) { //ogre has 30% chance of spawning
+                        myRegionContent.put("Monster", new Monster(MonsterType.OGRE));
+                    } else if (monsterType < 0.7 && monsterType > 0.4) { //direwolf has 30% chance of spawning
+                        myRegionContent.put("Monster", new Monster(MonsterType.DIREWOLF));
+                    } else { //goblin has 40% chance of spawning
+                        myRegionContent.put("Monster", new Monster(MonsterType.GOBLIN));
+                    }
+                }
+                catch(SQLException e) {
+                    System.out.println("Exception " + e);
+                }
+            }
+        }
+
+        // Get methods to use upon entering region.
+        public Monster getMonster() {
+            return (Monster)myRegionContent.get("Monster");
+        }
+
+        public Item getItem() {
+            return (Item)myRegionContent.get("Potion");
+        }
+
+        public boolean getTrap() {
+            return (Boolean)myRegionContent.get("Trap");
         }
 
         private boolean[] getWalls() {
