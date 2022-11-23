@@ -69,14 +69,14 @@ public class GameController {
     }
 
     //Character can not pass data using its getters, so we need to overload battle for Monsters and Guardians.
-    void battle(Monster theDefender) throws SQLException {
+    void battle(final Monster theDefender) throws SQLException {
         System.out.println("A " + theDefender.getMyName() + " approaches!");
         System.out.println("Use 1 to trigger attack, 2 to trigger skill!");
         Scanner sc = new Scanner(System.in);
         String input;
         //First find turn order: enemy cannot have more turns than hero, if hero.speed >= 2*defender.speed, hero gets two turns
         int heroTurns = (int) Math.floor(myHero.getMyAttackSpeed() / (2 * theDefender.getMyAttackSpeed()));
-        heroTurns = heroTurns <= 0 ? 1 : heroTurns;
+        heroTurns = heroTurns == 0 ? 1 : heroTurns;
 
         //This is where battling happens.
         while (myHero.getHealth() > 0 && theDefender.getHealth() > 0) {
@@ -113,14 +113,14 @@ public class GameController {
         }
     }
 
-    void battle(Guardian theDefender) throws SQLException {
+    void battle(final Guardian theDefender) throws SQLException {
         System.out.println("A " + theDefender.getMyName() + " approaches!");
         System.out.println("Use 1 to trigger attack, 2 to trigger skill!");
         Scanner sc = new Scanner(System.in);
         String input;
         //First find turn order: enemy cannot have more turns than hero, if hero.speed >= 2*defender.speed, hero gets two turns
         int heroTurns = (int) Math.floor(myHero.getMyAttackSpeed() / (2 * theDefender.getMyAttackSpeed()));
-        heroTurns = heroTurns <= 0 ? 1 : heroTurns;
+        heroTurns = heroTurns == 0 ? 1 : heroTurns;
 
         int turnCounter = 0;
         //This is where battling happens.
