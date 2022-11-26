@@ -1,6 +1,12 @@
 package Model;
 
+import Model.AbstractClasses.Guardian;
+import Model.AbstractClasses.Hero;
+
+import java.sql.*;
 import java.util.*;
+
+import static Model.CharacterConstants.MonsterType.*;
 
 public class Maze {
     //We want grid to be an ArrayList so that we can take advantage of its dynamic methods.
@@ -9,6 +15,18 @@ public class Maze {
     private final int myCols;
     private final Stack<Region> myBreadCrumbs;
 
+    private final Hero myHero;
+    private final int[] myHeroLocation;
+
+    private float myOgreChance;
+    private float myWolfChance;
+    private float myGoblinChance;
+
+    private Monster myEnemy;
+    private Guardian myBoss;
+
+
+
     //The constructor will:
     // - Know how many rows and columns it has
     // - Initialize a grid for the maze to be generated in
@@ -16,15 +34,39 @@ public class Maze {
     // - Call the generate method to march through region walls and form a maze
 
 
-    public Maze(final int theRows, final int theCols) {
+    public Maze(final int theSize, final int theDifficulty, Hero hero) throws SQLException {
         myGrid = new ArrayList<>();
 
-        myRows = theRows;
-        myCols = theCols;
+        myRows = theSize;
+        myCols = theSize;
         myBreadCrumbs = new Stack<>();
+
+        myHero = hero;
+        myHeroLocation = new int[]{0,0};
+
+        String jdbcURL = "jdbc:sqlite:DungeonAdventure.sqlite";
+
+        Connection connection = DriverManager.getConnection(jdbcURL);
+
+        Statement statement = connection.createStatement();
+        statement.setQueryTimeout(30);  // set timeout to 30 sec.
+
+        switch(theDifficulty){
+            case 1 -> loadDifficulty(statement.executeQuery("SELECT * FROM difficulty_table WHERE DIFFICULTY = 1 "));
+            case 2 -> loadDifficulty(statement.executeQuery("SELECT * FROM difficulty_table WHERE DIFFICULTY = 2 "));
+            case 3 -> loadDifficulty(statement.executeQuery("SELECT * FROM difficulty_table WHERE DIFFICULTY = 3 "));
+        }
+
+        connection.close();
 
         initialize(myGrid);
         generate();
+    }
+
+    private void loadDifficulty(final ResultSet rs) throws SQLException {
+        myOgreChance = rs.getFloat("OGRE");
+        myWolfChance = rs.getFloat("DIREWOLF");
+        myGoblinChance = rs.getFloat("GOBLIN");
     }
 
     //This method will fill the myGrid with default regions
@@ -92,6 +134,32 @@ public class Maze {
         }
     }
 
+    public void move(final String theDirection) throws SQLException {
+        Region newRoom;
+
+        switch (theDirection){
+            case "EAST" ->{
+                if(index(myHeroLocation[0],myHeroLocation[1]+1)==-1) throw new IndexOutOfBoundsException("Controller should not read in EAST if EAST is not an option, Location: "+(myHeroLocation[0])+","+(myHeroLocation[1]+1));
+                myHeroLocation[1]++;
+            }
+            case "WEST" ->{
+                if(index(myHeroLocation[0],myHeroLocation[1]-1)==-1) throw new IndexOutOfBoundsException("Controller should not read in WEST if WEST is not an option, Location: "+myHeroLocation[0]+","+(myHeroLocation[1]-1));
+                myHeroLocation[1]--;
+            }
+            case "NORTH" ->{
+                if(index(myHeroLocation[0]-1,myHeroLocation[1])==-1) throw new IndexOutOfBoundsException("Controller should not read in NORTH if NORTH is not an option, Location: "+(myHeroLocation[0]-1)+","+myHeroLocation[1]);
+                myHeroLocation[0]--;
+            }
+            case "SOUTH" ->{
+                if(index(myHeroLocation[0]+1,myHeroLocation[1])==-1) throw new IndexOutOfBoundsException("Controller should not read in SOUTH if SOUTH is not an option, Location: "+(myHeroLocation[0]+1)+","+myHeroLocation[1]);
+                myHeroLocation[0]++;
+            }
+            default ->throw new IllegalArgumentException("There are 4 possible Directions: NORTH, SOUTH, EAST, WEST. Input: "+theDirection);
+        }
+        newRoom = getRegion(myHeroLocation[0],myHeroLocation[1]);
+        newRoom.loot();
+    }
+
     Region getRegion(final int theRow, final int theColumn) {
         return myGrid.get(index(theRow, theColumn));
     }
@@ -108,20 +176,27 @@ public class Maze {
         return myCols;
     }
 
-    public List<Region> getGrid() {
-        return myGrid;
+    public Monster getEnemy() {
+        return myEnemy;
     }
 
-    //This data structure will hold Regions that will act as nodes to our grid
+    public Guardian getBoss() {
+        return myBoss;
+    }
+
+
     class Region {
         final int row, col;
         //Visited and Walls must be able to change as our generate method marches through regions
         public boolean visited;
         //make this private
         private final boolean[] walls;
+
         private boolean potion;
         private boolean trap;
         private boolean monster;
+
+        private boolean myLoot;
 
         //Region will be private and should only be accessed through the maze.
         //This is necessary to allow the maze instance to own regions
@@ -132,11 +207,59 @@ public class Maze {
             visited = false;
             //These booleans represent a wall on the left, right, top, bottom of a region respectively.
             walls = new boolean[]{true, true, true, true};
+            myLoot = true;
+
 
             //generate potions, traps, and monsters
             potion = Math.random() < 0.75;
             trap = Math.random() < 0.1;
             monster = Math.random() < 0.25;
+
+            //extend this to auto-fill the region with the item/trap/monster
+            //if potion true then 95% chance to create health potion, 5% vision potion
+            //if monster true then 50% weakest 30% next one and 20% the strongest
+            //if trap true then create a trap
+            //all will be stored in a hashmap with string and object
+
+        }
+
+        private void loot() throws SQLException {
+            myLoot = false;
+
+            if(potion) {
+                myHero.getInventory().addItem(Math.random() < 0.95 ? new HealthPotion() : new VisionPotion());
+                potion = false;
+            }
+
+            if(trap){
+                myHero.trap(15);
+                trap = false;
+                if(myHero.getHealth()<0) return;
+            }
+
+            if(monster){
+                monster = false;
+                float type = (float) Math.random();
+                if(type<myGoblinChance) myEnemy = new Monster(GOBLIN);
+                else if(type<myGoblinChance+myWolfChance) myEnemy = new Monster(DIREWOLF);
+                else myEnemy = new Monster(OGRE);
+            }else{
+                myEnemy = null;
+            }
+
+        }
+
+        // Get methods to use upon entering region.
+        public boolean getMonster() {
+            return monster;
+        }
+
+        public boolean getItem() {
+            return potion;
+        }
+
+        public boolean getTrap() {
+            return trap;
         }
 
         private boolean[] getWalls() {

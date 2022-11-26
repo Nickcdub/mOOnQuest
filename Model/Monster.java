@@ -7,13 +7,12 @@ import Model.Interfaces.Healable;
 import java.sql.*;
 
 public class Monster extends Character implements Healable {
-    public MonsterType type;
     public float myHealChance;
     public int myRegeneration;
 
-    public Monster(MonsterType type) throws SQLException {
-        myName = type.name();
-        switch (type) {
+    public Monster(final MonsterType theType) throws SQLException {
+        myName = theType.name();
+        switch (theType) {
             case OGRE -> loadOgre();
             case GOBLIN -> loadGoblin();
             case DIREWOLF -> loadDirewolf();
@@ -59,7 +58,7 @@ public class Monster extends Character implements Healable {
         loadStats(connection, rs);
     }
 
-    private void loadStats(Connection connection, ResultSet rs) throws SQLException {
+    private void loadStats(final Connection connection, final ResultSet rs) throws SQLException {
         myHitPoints = MAX_HEALTH = rs.getInt("HP");
         myAttackSpeed = rs.getInt("SPEED");
         myHitChance = rs.getFloat("HITCHANCE");
@@ -72,7 +71,7 @@ public class Monster extends Character implements Healable {
     }
 
     @Override
-    public String damage(int theDamage) {
+    public String damage(final int theDamage) {
         myHitPoints = myHitPoints - theDamage;
         return myName + " took " + theDamage + " damage.\n";
     }

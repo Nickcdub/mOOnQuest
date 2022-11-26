@@ -30,6 +30,10 @@ public abstract class Character{
 
     public abstract String damage(final int theDamage);
 
+    public String getMyName(){
+        return myName;
+    }
+
     public int getHealth(){
         return myHitPoints;
     }

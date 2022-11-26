@@ -24,7 +24,7 @@ public class Knight extends Hero {
 
         ResultSet rs = statement.executeQuery("SELECT * FROM hero_table WHERE NAME ='KNIGHT' ");
 
-        loadHero(connection, rs);
+        loadHero(rs);
 
         connection.close();
     }
@@ -33,7 +33,7 @@ public class Knight extends Hero {
     @Override
     public String ultimate(final Character theDefender) {
         //If our random value is not within our chance range (40%), do nothing, the hit misses
-        if (Math.random() > ultChance) return myName + " Missed Fatal Slash...";
+        if (Math.random() > myUltChance) return myName + " Missed Fatal Slash...";
         final Random r = new Random();
         int result = (r.nextInt(175 - 75) + 75);
         return "Fatal Slash! " + (theDefender.damage(result));

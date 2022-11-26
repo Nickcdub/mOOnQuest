@@ -3,10 +3,10 @@
 package Model.AbstractClasses;
 
 public abstract class SpecialCharacter extends Character {
-    public float ultChance;
+    public float myUltChance;
 
     public SpecialCharacter() {
     }
 
-    public abstract String ultimate(Character theDefender);
+    public abstract String ultimate(final Character theDefender);
 }

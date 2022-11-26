@@ -4,7 +4,6 @@ import Model.Interfaces.Blockable;
 import Model.Interfaces.Healable;
 import Model.Inventory;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -19,22 +18,27 @@ public abstract class Hero extends SpecialCharacter implements Blockable, Healab
     }
 
 
-    public String damage(int theDamage) {
-        theDamage = block(theDamage);
-        myHitPoints = myHitPoints - theDamage;
-        return theDamage == 0 ? myName + " blocked all incoming damage!\n" : myName + " took " + theDamage + " damage!\n";
+    public String damage(final int theDamage) {
+        int result = block(theDamage);
+        myHitPoints = myHitPoints - result;
+        return result == 0 ? myName + " blocked all incoming damage!\n" : myName + " took " + theDamage + " damage!\n";
     }
 
     @Override
-    public int block(int theDamage) {
+    public int block(final int theDamage) {
         return Math.random() <= myBlockChance ? 0 : theDamage;
     }
 
-    public String getMyInventory() {
-        return myInventory.toString();
+    public Inventory getInventory() {
+        return myInventory;
     }
 
-    public String heal(int myMax, int myMin) {
+    public void trap(final int theDamage){
+        myHitPoints = myHitPoints - theDamage;
+        System.out.println(myName+" was ensared by a trap and took "+theDamage+" damage!");
+    }
+
+    public String heal(final int myMax, final int myMin) {
         Random r = new Random();
         int result = r.nextInt(myMax - myMin) + myMin;
 
@@ -43,7 +47,7 @@ public abstract class Hero extends SpecialCharacter implements Blockable, Healab
         return myHitPoints == MAX_HEALTH ? myName + " healed to Max Health!" : myName + " healed for " + result + " HP!\n";
     }
 
-    protected void loadHero(Connection connection, ResultSet rs) throws SQLException {
+    protected void loadHero(final ResultSet rs) throws SQLException {
         myName = rs.getString("NAME");
         myHitPoints = MAX_HEALTH = rs.getInt("HP");
         myAttackSpeed = rs.getInt("SPEED");
@@ -51,7 +55,7 @@ public abstract class Hero extends SpecialCharacter implements Blockable, Healab
         myBlockChance = rs.getFloat("BLOCKCHANCE");
         myMinDmg = rs.getInt("MINDMG");
         myMaxDmg = rs.getInt("MAXDMG");
-        ultChance = rs.getFloat("ULTCHANCE");
+        myUltChance = rs.getFloat("ULTCHANCE");
     }
 
     public String toString() {

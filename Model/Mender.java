@@ -4,7 +4,6 @@ import Model.AbstractClasses.Character;
 import Model.AbstractClasses.Hero;
 
 import java.sql.*;
-import java.util.Random;
 
 public class Mender extends Hero {
 
@@ -24,7 +23,7 @@ public class Mender extends Hero {
 
         ResultSet rs = statement.executeQuery("SELECT * FROM hero_table WHERE NAME ='MENDER' ");
 
-        loadHero(connection, rs);
+        loadHero(rs);
 
         connection.close();
     }
@@ -32,7 +31,7 @@ public class Mender extends Hero {
     //Ultimate heals mender between 65 and 75 health
     @Override
     public String ultimate(Character theDefender) {
-        if (Math.random() > ultChance) return myName + " Missed Heal...";
+        if (Math.random() > myUltChance) return myName + " Missed Heal...";
         return heal(75, 65);
     }
 
