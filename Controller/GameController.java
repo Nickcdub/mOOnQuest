@@ -3,6 +3,7 @@ package Controller;
 import Model.*;
 import Model.AbstractClasses.Guardian;
 import Model.AbstractClasses.Hero;
+import View.GameFrame;
 
 import java.sql.SQLException;
 import java.sql.SQLOutput;
@@ -15,6 +16,7 @@ public class GameController {
 
     private Hero myHero;
     private Maze myMaze;
+    private GameFrame frame;
     private boolean win;
 
     public GameController() throws SQLException {
@@ -24,6 +26,7 @@ public class GameController {
     }
 
     void intro() throws SQLException {
+        frame = new GameFrame();
         Scanner sc = new Scanner(System.in);
         String input;
         System.out.println("Welcome to mOOn Quest, please use the keyboard to type a single character input.\n" +
@@ -68,25 +71,40 @@ public class GameController {
             case "3" -> myMaze = new Maze(6, 3,myHero);
             default -> difficultySelect();
         }
+        frame.showMap(myMaze);
         traverse();
     }
 
     void traverse() throws SQLException {
+        int pillarCount = 0;
         Scanner sc = new Scanner(System.in);
         String input;
         System.out.println("Use W,A,S,D to traverse NORTH, EAST, SOUTH, WEST respectively");
-        while(!win) {
+        while(pillarCount!=4) {
             System.out.println("Possible Moves: "+myMaze.getPath());
             input = sc.next().toLowerCase(Locale.ROOT);
             switch (input) {
-                case "w" -> myMaze.move("NORTH");
-                case "a" -> myMaze.move("WEST");
-                case "s" -> myMaze.move("SOUTH");
-                case "d" -> myMaze.move("EAST");
+                case "w" -> {
+                    if(myMaze.getPath().contains("NORTH")) myMaze.move("NORTH");
+                }
+                case "a" -> {
+                    if(myMaze.getPath().contains("WEST")) myMaze.move("WEST");
+                }
+                case "s" -> {
+                    if(myMaze.getPath().contains("SOUTH")) myMaze.move("SOUTH");
+                }
+                case "d" -> {
+                    if(myMaze.getPath().contains("EAST")) myMaze.move("EAST");
+                }
             }
             if(myMaze.getEnemy()!=null) battle(myMaze.getEnemy());
-            else if(myMaze.getBoss()!=null) battle(myMaze.getBoss());
+            else if(myMaze.getBoss()!=null){
+                battle(myMaze.getBoss());
+                pillarCount++;
+            }
+            frame.showMap(myMaze);
         }
+        win();
     }
 
     //Character can not pass data using its getters, so we need to overload battle for Monsters and Guardians.
@@ -193,6 +211,18 @@ public class GameController {
                 case "1" -> intro();
                 case "2" -> exit();
             }
+        }
+    }
+
+    private void win() throws SQLException {
+        System.out.println("\nAll four pillar retrieved! Thank you for playing!");
+        System.out.println("Play Again?");
+        System.out.print("y/n: ");
+        Scanner sc = new Scanner(System.in);
+        String input = sc.nextLine();
+        switch(input){
+            case "y" -> intro();
+            case "n" -> exit();
         }
     }
 

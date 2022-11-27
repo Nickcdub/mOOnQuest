@@ -130,8 +130,11 @@ public class Maze {
     //This method will march through our region walls to carve a maze and plop bosses when not backtracking
     private void generate() {
         //Keep track of current and next region in the march, mark current as visited
+        //Keep track of region that gets blocked so that we can save the final region in the generation.
         Region current = myGrid.get(0);
         Region next = current.randomNeighbor();
+        Region blocked = null;
+
         current.myVisited = true;
         //We want our bossMarcher at 1 because our 0,0 region counts as a visited space.
         //bossCount needs to hold how many bosses our maze has so that when bossCount ==3, we can place the last one at the end.
@@ -152,14 +155,16 @@ public class Maze {
             //Progress bossMarcher as we've entered a new room, check if we can put a guardian!
             //If we can, we should clear the room so we don't encounter monsters or items and add a guardian.
             bossMarcher++;
-            if(bossMarcher==Math.floor(myRows*myCols/4) && bossCount<4){
+            if(bossMarcher==Math.floor(myRows*myCols/4) && bossCount<3){
                 bossCount++;
                 current.clearRoom();
                 current.addGuardian();
+                bossMarcher=0;
             }
 
             //Oh no! we've hit a block, just backtrack to a time when we had neighbors
-            //I've we end up back at the beginning, then our maze is complete and the loop can end
+            //If we end up back at the beginning, then our maze is complete and the loop can end
+            blocked = current;
             while (next == null && myBreadCrumbs.size() != 0) {
                 current = myBreadCrumbs.pop();
                 next = current.randomNeighbor();
@@ -167,8 +172,8 @@ public class Maze {
 
         }
         //We've reached the end, place our final boss
-        current.clearRoom();
-        current.addGuardian();
+        blocked.clearRoom();
+        blocked.addGuardian();
     }
     public String getPath(){
         boolean[] walls = getRegion(myHeroLocation[0],myHeroLocation[1]).getWalls();
@@ -210,12 +215,33 @@ public class Maze {
         }else newRoom.loot();
     }
 
-    Region getRegion(final int theRow, final int theColumn) {
+    /*
+    *
+    * Get Region Info:
+    * We don't want anyone touching regions important data, but it's okay for Controller to ask for some things...
+    *
+     */
+
+    private Region getRegion(final int theRow, final int theColumn) {
         return myGrid.get(index(theRow, theColumn));
     }
 
     public boolean[] getRegionWalls(int row, int col) {
         return getRegion(row, col).getWalls();
+    }
+
+    public boolean getRegionGuardian(int row, int col){
+        return getRegion(row, col).getGuardian();
+    }
+
+    public boolean getRegionMonster(int row, int col){
+        return getRegion(row,col).getMonster();
+    }
+    public boolean getRegionTrap(int row, int col){
+        return getRegion(row,col).getTrap();
+    }
+    public boolean getRegionPotion(int row, int col){
+        return getRegion(row,col).getItem();
     }
 
     public int getRows() {
@@ -224,6 +250,10 @@ public class Maze {
 
     public int getColumns() {
         return myCols;
+    }
+
+    public int[] getHeroLocation(){
+        return myHeroLocation;
     }
 
     public Monster getEnemy() {
@@ -331,6 +361,10 @@ public class Maze {
 
         public boolean getTrap() {
             return myTrap;
+        }
+
+        public boolean getGuardian(){
+            return myGuardian;
         }
 
 

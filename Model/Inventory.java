@@ -21,6 +21,7 @@ public class Inventory {
 
     public void addItem(final Item theItem) {
         myInventory.put(theItem.toString(), myInventory.get(theItem.toString()) + 1);
+        System.out.println(theItem+" added to Inventory!");
     }
 
     public void removeItem(final Item theItem) {
