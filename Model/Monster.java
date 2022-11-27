@@ -6,7 +6,7 @@ import Model.Interfaces.Healable;
 
 import java.sql.*;
 
-public class Monster extends Character implements Healable {
+public class Monster extends Character implements Healable{
     public float myHealChance;
     public int myRegeneration;
 

@@ -1,7 +1,7 @@
 package Model.AbstractClasses;
 
+
 import Model.Interfaces.Blockable;
-import Model.Interfaces.Healable;
 import Model.Inventory;
 
 import java.sql.ResultSet;
@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 import java.util.Random;
 
-public abstract class Hero extends SpecialCharacter implements Blockable, Healable {
+public abstract class Hero extends SpecialCharacter implements Blockable {
     protected final Inventory myInventory;
     protected float myBlockChance;
 

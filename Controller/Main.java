@@ -40,10 +40,11 @@ public class Main {
         System.out.println(hydra);*/
 
 
-        /*Maze maze = new Maze(230,230);
+        Maze maze = new Maze(7,3,new Assassin());
         GameFrame gui = new GameFrame();
-        gui.showMap(maze,400);*/
+        gui.showMap(maze,400);
 
-        GameController controller = new GameController();
+
+        //GameController controller = new GameController();
     }
 }

@@ -5,6 +5,7 @@ import Model.AbstractClasses.Guardian;
 import Model.AbstractClasses.Hero;
 
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -14,6 +15,7 @@ public class GameController {
 
     private Hero myHero;
     private Maze myMaze;
+    private boolean win;
 
     public GameController() throws SQLException {
         intro();
@@ -29,7 +31,7 @@ public class GameController {
         input = sc.nextLine().toLowerCase(Locale.ROOT);
         switch (input) {
             case "1" -> characterSelect();
-            case "2" -> input = null;
+            case "2" -> input = null; //change this at some point.
             default -> intro();
         }
     }
@@ -51,7 +53,7 @@ public class GameController {
         difficultySelect();
     }
 
-    void difficultySelect() {
+    void difficultySelect() throws SQLException {
         Scanner sc = new Scanner(System.in);
         String input;
         System.out.print("Please choose a difficulty!\n" +
@@ -61,10 +63,29 @@ public class GameController {
                 "Difficulty: ");
         input = sc.next().toLowerCase(Locale.ROOT);
         switch (input) {
-            case "1" -> myMaze = new Maze(4, 4);
-            case "2" -> myMaze = new Maze(5, 5);
-            case "3" -> myMaze = new Maze(6, 6);
+            case "1" -> myMaze = new Maze(4,1, myHero);
+            case "2" -> myMaze = new Maze(5, 2,myHero);
+            case "3" -> myMaze = new Maze(6, 3,myHero);
             default -> difficultySelect();
+        }
+        traverse();
+    }
+
+    void traverse() throws SQLException {
+        Scanner sc = new Scanner(System.in);
+        String input;
+        System.out.println("Use W,A,S,D to traverse NORTH, EAST, SOUTH, WEST respectively");
+        while(!win) {
+            System.out.println("Possible Moves: "+myMaze.getPath());
+            input = sc.next().toLowerCase(Locale.ROOT);
+            switch (input) {
+                case "w" -> myMaze.move("NORTH");
+                case "a" -> myMaze.move("WEST");
+                case "s" -> myMaze.move("SOUTH");
+                case "d" -> myMaze.move("EAST");
+            }
+            if(myMaze.getEnemy()!=null) battle(myMaze.getEnemy());
+            else if(myMaze.getBoss()!=null) battle(myMaze.getBoss());
         }
     }
 
@@ -87,6 +108,14 @@ public class GameController {
                 switch (input) {
                     case "1" -> System.out.print(myHero.attack(theDefender));
                     case "2" -> System.out.print(myHero.ultimate(theDefender));
+                    case "0" -> {
+                        System.out.println("Combat Skip!\n");
+                        theDefender.damage(500);
+                    }
+                    default ->  {
+                        System.out.println(" Invalid Input! Use 1 to trigger attack, 2 to trigger skill!");
+                        i--;
+                    }
                 }
             }
 
@@ -126,12 +155,21 @@ public class GameController {
         //This is where battling happens.
         while (myHero.getHealth() > 0 && theDefender.getHealth() > 0) {
             //Hero's turn
+            //1 is normal attack, 2 is ultimate, 0 is a cheat to skip (possibility of cerberus blocking)
             for (int i = 0; i < heroTurns; i++) {
                 System.out.println(myHero.getMyName() + "'s Turn!");
                 input = sc.next();
                 switch (input) {
                     case "1" -> System.out.print(myHero.attack(theDefender));
                     case "2" -> System.out.print(myHero.ultimate(theDefender));
+                    case "0" -> {
+                        System.out.println("Combat Skip!\n");
+                        theDefender.damage(500);
+                    }
+                    default ->  {
+                        System.out.println(" Invalid Input! Use 1 to trigger attack, 2 to trigger skill!");
+                        i--;
+                    }
                 }
             }
 

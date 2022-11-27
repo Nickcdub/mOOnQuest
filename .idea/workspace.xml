@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="91f3fcc5-3b21-47f9-976c-ba05be21b216" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Model/AbstractClasses/Guardian.java" beforeDir="false" afterPath="$PROJECT_DIR$/Model/AbstractClasses/Guardian.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/Cerberus.java" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Cerberus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/DungeonAdventure.sqlite" beforeDir="false" afterPath="$PROJECT_DIR$/Model/DungeonAdventure.sqlite" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/Knight.java" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Knight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/Monster.java" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Monster.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/RedDragon.java" beforeDir="false" afterPath="$PROJECT_DIR$/Model/RedDragon.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model/Tom.java" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Tom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

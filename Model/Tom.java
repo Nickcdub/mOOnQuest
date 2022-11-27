@@ -2,12 +2,11 @@ package Model;
 
 import Model.AbstractClasses.Character;
 import Model.AbstractClasses.Guardian;
-import Model.Interfaces.Healable;
 
 import java.sql.*;
 import java.util.Random;
 
-public class Tom extends Guardian implements Healable {
+public class Tom extends Guardian {
 
     //Just load toms stats
     public Tom() throws SQLException {
