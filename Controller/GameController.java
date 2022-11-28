@@ -3,8 +3,10 @@ package Controller;
 import Model.*;
 import Model.AbstractClasses.Guardian;
 import Model.AbstractClasses.Hero;
+import View.GameFrame;
 
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -14,6 +16,8 @@ public class GameController {
 
     private Hero myHero;
     private Maze myMaze;
+    private GameFrame frame;
+    private boolean win;
 
     public GameController() throws SQLException {
         intro();
@@ -22,6 +26,7 @@ public class GameController {
     }
 
     void intro() throws SQLException {
+        frame = new GameFrame();
         Scanner sc = new Scanner(System.in);
         String input;
         System.out.println("Welcome to mOOn Quest, please use the keyboard to type a single character input.\n" +
@@ -29,7 +34,7 @@ public class GameController {
         input = sc.nextLine().toLowerCase(Locale.ROOT);
         switch (input) {
             case "1" -> characterSelect();
-            case "2" -> input = null;
+            case "2" -> input = null; //change this at some point.
             default -> intro();
         }
     }
@@ -51,7 +56,7 @@ public class GameController {
         difficultySelect();
     }
 
-    void difficultySelect() {
+    void difficultySelect() throws SQLException {
         Scanner sc = new Scanner(System.in);
         String input;
         System.out.print("Please choose a difficulty!\n" +
@@ -61,22 +66,56 @@ public class GameController {
                 "Difficulty: ");
         input = sc.next().toLowerCase(Locale.ROOT);
         switch (input) {
-            case "1" -> myMaze = new Maze(4, 4);
-            case "2" -> myMaze = new Maze(5, 5);
-            case "3" -> myMaze = new Maze(6, 6);
+            case "1" -> myMaze = new Maze(4,1, myHero);
+            case "2" -> myMaze = new Maze(5, 2,myHero);
+            case "3" -> myMaze = new Maze(6, 3,myHero);
             default -> difficultySelect();
         }
+        frame.showMap(myMaze);
+        traverse();
+    }
+
+    void traverse() throws SQLException {
+        int pillarCount = 0;
+        Scanner sc = new Scanner(System.in);
+        String input;
+        System.out.println("Use W,A,S,D to traverse NORTH, EAST, SOUTH, WEST respectively");
+        while(pillarCount!=4) {
+            System.out.println("Possible Moves: "+myMaze.getPath());
+            input = sc.next().toLowerCase(Locale.ROOT);
+            switch (input) {
+                case "w" -> {
+                    if(myMaze.getPath().contains("NORTH")) myMaze.move("NORTH");
+                }
+                case "a" -> {
+                    if(myMaze.getPath().contains("WEST")) myMaze.move("WEST");
+                }
+                case "s" -> {
+                    if(myMaze.getPath().contains("SOUTH")) myMaze.move("SOUTH");
+                }
+                case "d" -> {
+                    if(myMaze.getPath().contains("EAST")) myMaze.move("EAST");
+                }
+            }
+            if(myMaze.getEnemy()!=null) battle(myMaze.getEnemy());
+            else if(myMaze.getBoss()!=null){
+                battle(myMaze.getBoss());
+                pillarCount++;
+            }
+            frame.showMap(myMaze);
+        }
+        win();
     }
 
     //Character can not pass data using its getters, so we need to overload battle for Monsters and Guardians.
-    void battle(Monster theDefender) throws SQLException {
+    void battle(final Monster theDefender) throws SQLException {
         System.out.println("A " + theDefender.getMyName() + " approaches!");
         System.out.println("Use 1 to trigger attack, 2 to trigger skill!");
         Scanner sc = new Scanner(System.in);
         String input;
         //First find turn order: enemy cannot have more turns than hero, if hero.speed >= 2*defender.speed, hero gets two turns
         int heroTurns = (int) Math.floor(myHero.getMyAttackSpeed() / (2 * theDefender.getMyAttackSpeed()));
-        heroTurns = heroTurns < 0 ? 1 : heroTurns;
+        heroTurns = heroTurns == 0 ? 1 : heroTurns;
 
         //This is where battling happens.
         while (myHero.getHealth() > 0 && theDefender.getHealth() > 0) {
@@ -87,6 +126,14 @@ public class GameController {
                 switch (input) {
                     case "1" -> System.out.print(myHero.attack(theDefender));
                     case "2" -> System.out.print(myHero.ultimate(theDefender));
+                    case "0" -> {
+                        System.out.println("Combat Skip!\n");
+                        theDefender.damage(500);
+                    }
+                    default ->  {
+                        System.out.println(" Invalid Input! Use 1 to trigger attack, 2 to trigger skill!");
+                        i--;
+                    }
                 }
             }
 
@@ -113,25 +160,34 @@ public class GameController {
         }
     }
 
-    void battle(Guardian theDefender) throws SQLException {
+    void battle(final Guardian theDefender) throws SQLException {
         System.out.println("A " + theDefender.getMyName() + " approaches!");
         System.out.println("Use 1 to trigger attack, 2 to trigger skill!");
         Scanner sc = new Scanner(System.in);
         String input;
         //First find turn order: enemy cannot have more turns than hero, if hero.speed >= 2*defender.speed, hero gets two turns
         int heroTurns = (int) Math.floor(myHero.getMyAttackSpeed() / (2 * theDefender.getMyAttackSpeed()));
-        heroTurns = heroTurns < 0 ? 1 : heroTurns;
+        heroTurns = heroTurns == 0 ? 1 : heroTurns;
 
         int turnCounter = 0;
         //This is where battling happens.
         while (myHero.getHealth() > 0 && theDefender.getHealth() > 0) {
             //Hero's turn
+            //1 is normal attack, 2 is ultimate, 0 is a cheat to skip (possibility of cerberus blocking)
             for (int i = 0; i < heroTurns; i++) {
                 System.out.println(myHero.getMyName() + "'s Turn!");
                 input = sc.next();
                 switch (input) {
                     case "1" -> System.out.print(myHero.attack(theDefender));
                     case "2" -> System.out.print(myHero.ultimate(theDefender));
+                    case "0" -> {
+                        System.out.println("Combat Skip!\n");
+                        theDefender.damage(500);
+                    }
+                    default ->  {
+                        System.out.println(" Invalid Input! Use 1 to trigger attack, 2 to trigger skill!");
+                        i--;
+                    }
                 }
             }
 
@@ -155,6 +211,18 @@ public class GameController {
                 case "1" -> intro();
                 case "2" -> exit();
             }
+        }
+    }
+
+    private void win() throws SQLException {
+        System.out.println("\nAll four pillar retrieved! Thank you for playing!");
+        System.out.println("Play Again?");
+        System.out.print("y/n: ");
+        Scanner sc = new Scanner(System.in);
+        String input = sc.nextLine();
+        switch(input){
+            case "y" -> intro();
+            case "n" -> exit();
         }
     }
 

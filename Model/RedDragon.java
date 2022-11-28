@@ -4,11 +4,8 @@ import Model.AbstractClasses.Character;
 import Model.AbstractClasses.Guardian;
 
 import java.sql.*;
-import java.util.Random;
 
 public class RedDragon extends Guardian {
-    public int fireDmgMax;
-    public int fireDmgMin;
 
     public RedDragon() throws SQLException {
         loadRedDragon();
@@ -30,9 +27,9 @@ public class RedDragon extends Guardian {
     }
 
     @Override
-    public String ultimate(Character theDefender) {
+    public String ultimate(final Character theDefender) {
         //If our random value is not within our chance range, do nothing, the hit misses
-        if (Math.random() < ultChance) return myName + " Missed Incinerate...\n";
+        if (Math.random() < myUltChance) return myName + " Missed Incinerate...\n";
         return "Incinerate! " + (theDefender.damage(70));
     }
 }

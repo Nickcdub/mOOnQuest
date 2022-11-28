@@ -5,7 +5,7 @@ import Model.AbstractClasses.Item;
 
 public class HealthPotion extends Item {
     public HealthPotion() {
-        this.myPotionName = "Health Potion";
+        myPotionName = "Health Potion";
     }
 
     @Override

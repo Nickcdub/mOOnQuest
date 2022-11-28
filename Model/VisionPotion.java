@@ -9,6 +9,6 @@ public class VisionPotion extends Item {
     }
     @Override
     public void useEffect(Hero theHero) {
-        theHero.setVision(2);
+        //theHero.setVision(2);
     }
 }

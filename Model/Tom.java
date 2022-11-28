@@ -2,12 +2,11 @@ package Model;
 
 import Model.AbstractClasses.Character;
 import Model.AbstractClasses.Guardian;
-import Model.Interfaces.Healable;
 
 import java.sql.*;
 import java.util.Random;
 
-public class Tom extends Guardian implements Healable {
+public class Tom extends Guardian {
 
     //Just load toms stats
     public Tom() throws SQLException {
@@ -43,7 +42,7 @@ public class Tom extends Guardian implements Healable {
     public String ultimate(Character theDefender) {
 
         //If our random value is not within our chance range, do nothing, the hit misses
-        if (Math.random() < ultChance) return myName + " Missed mOOn Lecture...\n";
+        if (Math.random() < myUltChance) return myName + " Missed mOOn Lecture...\n";
         final Random hit = new Random();
 
         int damage = (hit.nextInt(myMaxDmg - myMinDmg) + myMinDmg);

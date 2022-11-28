@@ -2,31 +2,31 @@ package Model;
 
 import Model.AbstractClasses.Item;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Inventory {
-    public Map<String, Integer> inventory;
+    private final Map<String, Integer> myInventory;
+
     public Inventory() {
-        inventory = new HashMap<String, Integer>();
-        inventory.put("Health Potion", 0);
-        inventory.put("Vision Potion", 0);
+        myInventory = new HashMap<>();
+        myInventory.put("Health Potion", 0);
+        myInventory.put("Vision Potion", 0);
     }
 
     @Override
     public String toString() {
-        return "[ Health Potions: " + inventory.get("Health Potion") + ", Vision Potions: " + inventory.get("Vision Potion") + " ]";
+        return "[ Health Potions: " + myInventory.get("Health Potion") + ", Vision Potions: " + myInventory.get("Vision Potion") + " ]";
     }
 
-    public void addItem(Item theItem) {
-        inventory.put(theItem.toString(), inventory.get(theItem.toString()) + 1);
+    public void addItem(final Item theItem) {
+        myInventory.put(theItem.toString(), myInventory.get(theItem.toString()) + 1);
+        System.out.println(theItem+" added to Inventory!");
     }
 
-    public void removeItem(Item theItem) {
-        if(inventory.get(theItem.toString()) > 0) {
-            inventory.put(theItem.toString(), inventory.get(theItem.toString()) - 1);
+    public void removeItem(final Item theItem) {
+        if(myInventory.get(theItem.toString()) > 0) {
+            myInventory.put(theItem.toString(), myInventory.get(theItem.toString()) - 1);
         }
     }
 }

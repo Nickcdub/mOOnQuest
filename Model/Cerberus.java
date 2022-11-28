@@ -37,7 +37,7 @@ public class Cerberus extends Guardian implements Blockable {
     @Override
     public String ultimate(Character theDefender) {
         //If our random value is not within our chance range, do nothing, the hit misses
-        if (Math.random() < ultChance) return myName + " Missed Multi-Bite...\n";
+        if (Math.random() < myUltChance) return myName + " Missed Multi-Bite...\n";
         final Random r = new Random();
         int result = (r.nextInt(65 - 50) + 50);
         return "Multi-Bite! " + (theDefender.damage(result));
@@ -45,9 +45,9 @@ public class Cerberus extends Guardian implements Blockable {
     }
 
     public String damage(int theDamage) {
-        theDamage = block(theDamage);
-        myHitPoints = myHitPoints - theDamage;
-        return theDamage == 0 ? myName + " blocked all incoming damage!\n" : myName + " took " + theDamage + " damage!\n";
+        int result = block(theDamage);
+        myHitPoints = myHitPoints - result;
+        return result == 0 ? myName + " blocked all incoming damage!\n" : myName + " took " + theDamage + " damage!\n";
     }
 
     @Override
@@ -57,7 +57,7 @@ public class Cerberus extends Guardian implements Blockable {
 
     @Override
     public String toString() {
-        return "GUARDIAN:" + myName + " HP:" + myHitPoints + "/" + MAX_HEALTH + " SPEED:" + myAttackSpeed + " ACCURACY:" + myHitChance + " ULTCHANCE:" + ultChance + " BLOCKCHANCE: " + myBlockChance;
+        return "GUARDIAN:" + myName + " HP:" + myHitPoints + "/" + MAX_HEALTH + " SPEED:" + myAttackSpeed + " ACCURACY:" + myHitChance + " ULTCHANCE:" + myUltChance + " BLOCKCHANCE: " + myBlockChance;
     }
 
 }

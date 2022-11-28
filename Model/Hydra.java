@@ -42,6 +42,6 @@ public class Hydra extends Guardian implements Healable {
 
     @Override
     public String ultimate(Character theDefender) {
-        return heal(100, 80);
+        return heal(80, 40);
     }
 }

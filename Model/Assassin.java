@@ -16,7 +16,7 @@ public class Assassin extends Hero {
     private void loadAssassin() throws SQLException {
         String jdbcURL = "jdbc:sqlite:DungeonAdventure.sqlite";
 
-        //Establish conection to driver url
+        //Establish connection to driver url
         Connection connection = DriverManager.getConnection(jdbcURL);
 
         Statement statement = connection.createStatement();
@@ -25,31 +25,30 @@ public class Assassin extends Hero {
         ResultSet rs = statement.executeQuery("SELECT * FROM hero_table WHERE NAME ='ASSASSIN' ");
 
         //Load hero stats from the database
-       loadHero(connection,rs);
+       loadHero(rs);
 
        //close connection
         connection.close();
     }
 
     @Override
-    public String ultimate(Character theDefender) {
-       int hitcount = 0;
-       String result = null;
+    public String ultimate(final Character theDefender) {
+       int hitCount = 0;
+       String result;
 
-       if(Math.random()> ultChance) hitcount++;
-        if(Math.random()> ultChance) hitcount++;
+       if(Math.random()> myUltChance) hitCount++;
+        if(Math.random()> myUltChance) hitCount++;
 
         Random r = new Random();
 
 
-        switch(hitcount){
+        switch(hitCount){
             case 0 -> result = myName+" Missed Rhythm Echo...\n"; //failed
             case 1 ->  result = "Partial Success:Single Hit!\n"+theDefender.damage(r.nextInt(myMaxDmg - myMinDmg) + myMinDmg);//partial success
             case 2 ->  result = "Complete Success: Double Hit!\n"+theDefender.damage(r.nextInt(myMaxDmg - myMinDmg) + myMinDmg)+theDefender.damage(r.nextInt(myMaxDmg - myMinDmg) + myMinDmg);//complete success
+            default -> throw new NumberFormatException("HitCount should be >=2, hitCount: "+hitCount);
         }
-
-        if (result==null) throw new NumberFormatException("HitCount should be >=2, hitcount: "+hitcount);
-        else return result;
+        return result;
     }
 
     @Override

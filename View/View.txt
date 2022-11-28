@@ -1,1 +1,0 @@
-This is where the user will be displayed info in the form of a GUI. 

@@ -18,12 +18,12 @@ public abstract class Guardian extends SpecialCharacter {
         myHitPoints = MAX_HEALTH = rs.getInt("HP");
         myAttackSpeed = rs.getInt("SPEED");
         myHitChance = rs.getFloat("HITCHANCE");
-        ultChance = rs.getFloat("SKILLCHANCE");
+        myUltChance = rs.getFloat("SKILLCHANCE");
         myMinDmg = rs.getInt("MINDMG");
         myMaxDmg = rs.getInt("MAXDMG");
     }
 
     public String toString() {
-        return "GUARDIAN:" + myName + " HP:" + myHitPoints + "/" + MAX_HEALTH + " SPEED:" + myAttackSpeed + " ACCURACY:" + myHitChance + " ULTCHANCE:" + ultChance;
+        return "GUARDIAN:" + myName + " HP:" + myHitPoints + "/" + MAX_HEALTH + " SPEED:" + myAttackSpeed + " ACCURACY:" + myHitChance + " ULTCHANCE:" + myUltChance;
     }
 }
