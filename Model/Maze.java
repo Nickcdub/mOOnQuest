@@ -216,10 +216,10 @@ public class Maze {
     }
 
     /*
-     *
-     * Get Region Info:
-     * We don't want anyone touching regions important data, but it's okay for Controller to ask for some things...
-     *
+    *
+    * Get Region Info:
+    * We don't want anyone touching regions important data, but it's okay for Controller to ask for some things...
+    *
      */
 
     private Region getRegion(final int theRow, final int theColumn) {

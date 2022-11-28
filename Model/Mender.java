@@ -35,8 +35,4 @@ public class Mender extends Hero {
         return heal(75, 65);
     }
 
-    @Override
-    public void Block() {
-
-    }
 }
