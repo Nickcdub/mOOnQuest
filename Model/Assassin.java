@@ -50,9 +50,4 @@ public class Assassin extends Hero {
         }
         return result;
     }
-
-    @Override
-    public void Block() {
-
-    }
 }
