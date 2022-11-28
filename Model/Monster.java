@@ -83,7 +83,7 @@ public class Monster extends Character implements Healable{
 
         //If hitpoints are healed beyond maxHealth, reset back at maxHealth;
         myHitPoints = myHitPoints + recover < MAX_HEALTH ? myHitPoints + recover : MAX_HEALTH;
-        return recover == 0 ? myName + " did not regenerate health." : myName + " regenerated " + recover + " health!\n";
+        return recover == 0 ? myName + " did not regenerate health.\n" : myName + " regenerated " + recover + " health!\n";
     }
 
     public String toString() {

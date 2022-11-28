@@ -44,7 +44,7 @@ public abstract class Hero extends SpecialCharacter implements Blockable {
 
         //If hitpoints are healed beyond maxHealth, reset back at maxHealth;
         myHitPoints = myHitPoints + result < MAX_HEALTH ? myHitPoints + result : MAX_HEALTH;
-        return myHitPoints == MAX_HEALTH ? myName + " healed to Max Health!" : myName + " healed for " + result + " HP!\n";
+        return myHitPoints == MAX_HEALTH ? myName + " healed to Max Health!\n" : myName + " healed for " + result + " HP!\n";
     }
 
     protected void loadHero(final ResultSet rs) throws SQLException {
