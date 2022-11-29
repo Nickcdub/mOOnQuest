@@ -6,7 +6,6 @@ import Model.AbstractClasses.Hero;
 import View.GameFrame;
 
 import java.sql.SQLException;
-import java.sql.SQLOutput;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -16,17 +15,14 @@ public class GameController {
 
     private Hero myHero;
     private Maze myMaze;
-    private GameFrame frame;
-    private boolean win;
+    private GameFrame myFrame;
 
     public GameController() throws SQLException {
         intro();
-        battle(new Monster(OGRE));
-        battle(new Cerberus());
     }
 
-    void intro() throws SQLException {
-        frame = new GameFrame();
+    private void intro() throws SQLException {
+        myFrame = new GameFrame();
         Scanner sc = new Scanner(System.in);
         String input;
         System.out.println("Welcome to mOOn Quest, please use the keyboard to type a single character input.\n" +
@@ -39,7 +35,7 @@ public class GameController {
         }
     }
 
-    void characterSelect() throws SQLException {
+    private void characterSelect() throws SQLException {
         Scanner sc = new Scanner(System.in);
         String input;
         System.out.print("Please choose a character!\n" +
@@ -56,13 +52,13 @@ public class GameController {
         difficultySelect();
     }
 
-    void difficultySelect() throws SQLException {
+    private void difficultySelect() throws SQLException {
         Scanner sc = new Scanner(System.in);
         String input;
         System.out.print("Please choose a difficulty!\n" +
                 "Bubble Blowin Baby(1): 4 by 4 maze, nothing too fancy, couple goblins, couple pillars.\n" +
                 "Amateur Explorer(2): Watched a lot of Dora as a kid, feel confident, 5 by 5 maze, goblins, wolves, and pillars.\n" +
-                "Big Kids Table(3): You eat nails for breakfast... without any milk! 6 by 6 maze, goblins, wolves, ogres oh my! Oh and pillars too.\n" +
+                "Big Kids Table(3): You eat nails for breakfast... without any milk! 7 by 7 maze, goblins, wolves, ogres oh my! Oh and pillars too.\n" +
                 "Difficulty: ");
         input = sc.next().toLowerCase(Locale.ROOT);
         switch (input) {
@@ -71,21 +67,21 @@ public class GameController {
             case "3" -> myMaze = new Maze(6, 3,myHero);
             default -> difficultySelect();
         }
-        frame.showMap(myMaze);
+        myFrame.showMap(myMaze);
         traverse();
     }
 
-    void traverse() throws SQLException {
-        int pillarCount = 0;
+    private void traverse() throws SQLException {
         Scanner sc = new Scanner(System.in);
         String input;
         System.out.println("Use W,A,S,D to traverse NORTH, EAST, SOUTH, WEST respectively");
-        while(pillarCount!=4) {
+        while(myHero.getPillarCount()!=4) {
             System.out.println("Possible Moves: "+myMaze.getPath());
             input = sc.next().toLowerCase(Locale.ROOT);
             switch (input) {
                 case "w" -> {
                     if(myMaze.getPath().contains("NORTH")) myMaze.move("NORTH");
+
                 }
                 case "a" -> {
                     if(myMaze.getPath().contains("WEST")) myMaze.move("WEST");
@@ -97,18 +93,18 @@ public class GameController {
                     if(myMaze.getPath().contains("EAST")) myMaze.move("EAST");
                 }
             }
-            if(myMaze.getEnemy()!=null) battle(myMaze.getEnemy());
+            if(myMaze.getEnemy()!=null) battle(myMaze.popEnemy());
             else if(myMaze.getBoss()!=null){
-                battle(myMaze.getBoss());
-                pillarCount++;
+                battle(myMaze.popBoss());
+                myHero.addPillar();
             }
-            frame.showMap(myMaze);
+            myFrame.showMap(myMaze);
         }
         win();
     }
 
     //Character can not pass data using its getters, so we need to overload battle for Monsters and Guardians.
-    void battle(final Monster theDefender) throws SQLException {
+    private void battle(final Monster theDefender) throws SQLException {
         System.out.println("A " + theDefender.getMyName() + " approaches!");
         System.out.println("Use 1 to trigger attack, 2 to trigger skill!");
         Scanner sc = new Scanner(System.in);
@@ -121,6 +117,7 @@ public class GameController {
         while (myHero.getHealth() > 0 && theDefender.getHealth() > 0) {
             //Hero's turn
             for (int i = 0; i < heroTurns; i++) {
+                System.out.println(myHero.getMyName()+"'s Health: "+myHero.getHealth()+"/"+myHero.getMaxHealth());
                 System.out.println(myHero.getMyName() + "'s Turn!");
                 input = sc.next();
                 switch (input) {
@@ -139,6 +136,7 @@ public class GameController {
 
             //Enemy's turn, if the enemy is still alive, let the monster heal and have it attack.
             if (theDefender.getHealth() > 0) {
+                System.out.println(theDefender.getMyName()+"'s Health: "+theDefender.getHealth()+"/"+theDefender.getMaxHealth());
                 System.out.println(theDefender.getMyName() + "'s Turn!");
                 System.out.print(theDefender.heal());
                 System.out.print(theDefender.attack(myHero));
@@ -160,7 +158,7 @@ public class GameController {
         }
     }
 
-    void battle(final Guardian theDefender) throws SQLException {
+    private void battle(final Guardian theDefender) throws SQLException {
         System.out.println("A " + theDefender.getMyName() + " approaches!");
         System.out.println("Use 1 to trigger attack, 2 to trigger skill!");
         Scanner sc = new Scanner(System.in);
@@ -175,6 +173,7 @@ public class GameController {
             //Hero's turn
             //1 is normal attack, 2 is ultimate, 0 is a cheat to skip (possibility of cerberus blocking)
             for (int i = 0; i < heroTurns; i++) {
+                System.out.println(myHero.getMyName()+"'s Health: "+myHero.getHealth()+"/"+myHero.getMaxHealth());
                 System.out.println(myHero.getMyName() + "'s Turn!");
                 input = sc.next();
                 switch (input) {
@@ -193,6 +192,7 @@ public class GameController {
 
             //Enemy's turn, if the enemy is still alive, let the Guardian try to ultimate every 3rd turn.
             if (theDefender.getHealth() > 0) {
+                System.out.println(theDefender.getMyName()+"'s Health: "+theDefender.getHealth()+"/"+theDefender.getMaxHealth());
                 System.out.println(theDefender.getMyName() + "'s Turn!");
                 String result = turnCounter % 3 == 0 && turnCounter!=0 ? theDefender.ultimate(myHero) : theDefender.attack(myHero);
                 turnCounter++;
@@ -203,6 +203,7 @@ public class GameController {
         if (theDefender.getHealth() < 0) {
             System.out.println(theDefender.getMyName() + " has been Vanquished!");
             System.out.print(myHero.heal((-theDefender.getHealth()), 0));
+            System.out.println("You recieved The "+theDefender.getPillar()+"!!!");
         } else if (myHero.getHealth() < 0) {
             System.out.println("You fell unconscious, you were defeated by " + theDefender.getMyName() + "!\n" +
                     "try again?(1) or give up(2)");
@@ -215,7 +216,7 @@ public class GameController {
     }
 
     private void win() throws SQLException {
-        System.out.println("\nAll four pillar retrieved! Thank you for playing!");
+        System.out.println("\nAll four pillars retrieved! Thank you for playing!");
         System.out.println("Play Again?");
         System.out.print("y/n: ");
         Scanner sc = new Scanner(System.in);
@@ -223,6 +224,7 @@ public class GameController {
         switch(input){
             case "y" -> intro();
             case "n" -> exit();
+            default -> win();
         }
     }
 

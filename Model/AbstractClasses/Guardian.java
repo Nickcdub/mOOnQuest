@@ -1,30 +1,24 @@
 package Model.AbstractClasses;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public abstract class Guardian extends SpecialCharacter {
-    protected String myPillar;
+    private String myPillar;
 
     @Override
     public String damage(final int theDamage) {
-        myHitPoints = myHitPoints - theDamage;
-        return myName + " took " + theDamage + " damage.";
+        setMyHitPoints( getHealth() - theDamage);
+        return getMyName() + " took " + theDamage + " damage.\n";
     }
 
     protected void loadGuardian(ResultSet theRS) throws SQLException {
-        myName = theRS.getString("NAME");
-        myHitPoints = maxHealth = theRS.getInt("HP");
-        myAttackSpeed = theRS.getInt("SPEED");
-        myHitChance = theRS.getFloat("HITCHANCE");
-        myUltChance = theRS.getFloat("SKILLCHANCE");
-        myMinDmg = theRS.getInt("MINDMG");
-        myMaxDmg = theRS.getInt("MAXDMG");
+        loadSpecialCharacter(theRS);
+        myPillar = theRS.getString("PILLAR");
     }
 
     public String toString() {
-        return "GUARDIAN:" + myName + " HP:" + myHitPoints + "/" + maxHealth + " SPEED:" + myAttackSpeed + " ACCURACY:" + myHitChance + " ULTCHANCE:" + myUltChance;
+        return "GUARDIAN:" + getMyName() + " HP:" + getHealth() + "/" + getMaxHealth() + " SPEED:" + getMyAttackSpeed() + " ACCURACY:" + getMyHitChance() + " ULTCHANCE:" + getMyUltChance();
     }
 
     public String getPillar() {

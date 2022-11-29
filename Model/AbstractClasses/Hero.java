@@ -16,13 +16,15 @@ public abstract class Hero extends SpecialCharacter implements Blockable {
 
     protected Hero() {
         INVENTORY = new Inventory();
+        myBlockChance = 0;
+        myPillarCount = 0;
     }
 
 
     public String damage(final int theDamage) {
         int result = block(theDamage);
-        myHitPoints = myHitPoints - result;
-        return result == 0 ? myName + " blocked all incoming damage!\n" : myName + " took " + theDamage + " damage!\n";
+        setMyHitPoints( getHealth() - result);
+        return result == 0 ? getMyName() + " blocked all incoming damage!\n" : getMyName() + " took " + theDamage + " damage!\n";
     }
 
     @Override
@@ -31,8 +33,8 @@ public abstract class Hero extends SpecialCharacter implements Blockable {
     }
 
     public void trap(final int theDamage){
-        myHitPoints = myHitPoints - theDamage;
-        System.out.println(myName+" was ensared by a trap and took "+theDamage+" damage!");
+        setMyHitPoints(getHealth() - theDamage);
+        System.out.println(getMyName()+" was ensared by a trap and took "+theDamage+" damage!");
     }
 
     public String heal(final int theMax, final int theMin) {
@@ -40,19 +42,13 @@ public abstract class Hero extends SpecialCharacter implements Blockable {
         int result = r.nextInt(theMax - theMin) + theMin;
 
         //If hitpoints are healed beyond maxHealth, reset back at maxHealth;
-        myHitPoints = myHitPoints + result < maxHealth ? myHitPoints + result : maxHealth;
-        return myHitPoints == maxHealth ? myName + " healed to Max Health!\n" : myName + " healed for " + result + " HP!\n";
+        setMyHitPoints(getHealth() + result < getMaxHealth() ? getHealth() + result : getMaxHealth());
+        return getHealth() == getMaxHealth() ? getMyName() + " healed to Max Health!\n" : getMyName() + " healed for " + result + " HP!\n";
     }
 
     protected void loadHero(final ResultSet theRS) throws SQLException {
-        myName = theRS.getString("NAME");
-        myHitPoints = maxHealth = theRS.getInt("HP");
-        myAttackSpeed = theRS.getInt("SPEED");
-        myHitChance = theRS.getFloat("HITCHANCE");
+        super.loadSpecialCharacter(theRS);
         myBlockChance = theRS.getFloat("BLOCKCHANCE");
-        myMinDmg = theRS.getInt("MINDMG");
-        myMaxDmg = theRS.getInt("MAXDMG");
-        myUltChance = theRS.getFloat("ULTCHANCE");
     }
 
     public void addPillar(){
@@ -67,6 +63,6 @@ public abstract class Hero extends SpecialCharacter implements Blockable {
     }
 
     public String toString() {
-        return "CLASS:" + myName + " HP:" + myHitPoints + "/" + maxHealth + " SPEED:" + myAttackSpeed + " ACCURACY:" + myHitChance + " PROTECTION:" + myBlockChance;
+        return "CLASS:" + getMyName() + " HP:" + getHealth() + "/" + getMaxHealth() + " SPEED:" + getMyAttackSpeed() + " ACCURACY:" + getMyHitChance() + " PROTECTION:" + myBlockChance;
     }
 }

@@ -11,7 +11,6 @@ public class Monster extends Character implements Healable{
     private int myRegeneration;
 
     public Monster(final MonsterType theType) throws SQLException {
-        myName = theType.name();
 
         String jdbcURL = "jdbc:sqlite:DungeonAdventure.sqlite";
 
@@ -29,19 +28,15 @@ public class Monster extends Character implements Healable{
     }
 
     private void loadStats(final ResultSet theRS) throws SQLException {
-        myHitPoints = maxHealth = theRS.getInt("HP");
-        myAttackSpeed = theRS.getInt("SPEED");
-        myHitChance = theRS.getFloat("HITCHANCE");
+        loadCharacter(theRS);
         myHealChance = theRS.getFloat("HEALCHANCE");
-        myMinDmg = theRS.getInt("MINDMG");
-        myMaxDmg = theRS.getInt("MAXDMG");
         myRegeneration = theRS.getInt("REGENERATION");
     }
 
     @Override
     public String damage(final int theDamage) {
-        myHitPoints = myHitPoints - theDamage;
-        return myName + " took " + theDamage + " damage.\n";
+        setMyHitPoints( getHealth() - theDamage);
+        return getMyName() + " took " + theDamage + " damage.\n";
     }
 
     @Override
@@ -50,11 +45,11 @@ public class Monster extends Character implements Healable{
         int recover = Math.random() <= myHealChance ? myRegeneration : 0;
 
         //If hitpoints are healed beyond maxHealth, reset back at maxHealth;
-        myHitPoints = myHitPoints + recover < maxHealth ? myHitPoints + recover : maxHealth;
-        return recover == 0 ? myName + " did not regenerate health.\n" : myName + " regenerated " + recover + " health!\n";
+        setMyHitPoints(getHealth() + recover < getMaxHealth() ? getHealth() + recover : getMaxHealth());
+        return recover == 0 ? getMyName() + " did not regenerate health.\n" : getMyName() + " regenerated " + recover + " health!\n";
     }
 
     public String toString() {
-        return "MONSTER:" + myName + " HP:" + myHitPoints + "/" + maxHealth + " SPEED:" + myAttackSpeed + " ACCURACY:" + myHitChance + " HEALCHANCE:" + myHealChance;
+        return "MONSTER:" + getMyName() + " HP:" + getHealth() + "/" + getMaxHealth() + " SPEED:" + getMyAttackSpeed() + " ACCURACY:" + getMyHitChance() + " HEALCHANCE:" + myHealChance;
     }
 }

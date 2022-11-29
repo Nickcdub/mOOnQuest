@@ -24,13 +24,12 @@ public class RedDragon extends Guardian {
         loadGuardian(rs);
 
         connection.close();
-        myPillar = "Pillar of Inheritance";
     }
 
     @Override
     public String ultimate(final Character theDefender) {
         //If our random value is not within our chance range, do nothing, the hit misses
-        if (Math.random() < myUltChance) return myName + " Missed Incinerate...\n";
+        if (Math.random() < getMyUltChance()) return getMyName() + " Missed Incinerate...\n";
         return "Incinerate! " + (theDefender.damage(70));
     }
 }

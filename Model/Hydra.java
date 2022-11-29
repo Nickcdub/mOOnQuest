@@ -28,7 +28,6 @@ public class Hydra extends Guardian implements Healable {
 
 
         connection.close();
-        myPillar = "Pillar of Polymorphism";
     }
 
     public String heal(final int theMax, final int theMin) {
@@ -36,8 +35,8 @@ public class Hydra extends Guardian implements Healable {
         int result = r.nextInt(theMax - theMin) + theMin;
 
         //If hitpoints are healed beyond maxHealth, reset back at maxHealth;
-        myHitPoints = myHitPoints + result < maxHealth ? myHitPoints + result : maxHealth;
-        return myHitPoints == maxHealth ? myName + " healed to Max Health!" : myName + " healed for " + result + " HP!\n";
+        setMyHitPoints(getHealth() + result < getMaxHealth() ? getHealth() + result : getMaxHealth());
+        return getHealth() == getMaxHealth() ? getMyName() + " healed to Max Health!\n" : getMyName() + " healed for " + result + " HP!\n";
     }
 
     @Override

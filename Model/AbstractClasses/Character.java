@@ -2,21 +2,39 @@
 
 package Model.AbstractClasses;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Random;
 
 public abstract class Character{
-    protected String myName;
+    private String myName;
     //Hp: health, speed: attack turn, hit chance: possibility of attack landing, min/maxDMG: range of damage from successful attack
-    protected int myHitPoints;
-    protected int maxHealth;
-    protected float myAttackSpeed;
-    protected float myHitChance;
-    protected int myMinDmg;
-    protected int myMaxDmg;
+    private int myHitPoints;
+    private int myMaxHealth;
+    private float myAttackSpeed;
+    private float myHitChance;
+    private int myMinDmg;
+    private int myMaxDmg;
 
     protected Character(){
-
+        myName = null;
+        myHitPoints = 0;
+        myMaxHealth = 0;
+        myAttackSpeed = 0;
+        myHitChance = 0;
+        myMinDmg = 0;
+        myMaxDmg = 0;
     }
+    protected void loadCharacter(ResultSet theRS) throws SQLException {
+        myName = theRS.getString("NAME");
+        myHitPoints = myMaxHealth = theRS.getInt("HP");
+        myAttackSpeed = theRS.getInt("SPEED");
+        myHitChance = theRS.getFloat("HITCHANCE");
+        myMinDmg = theRS.getInt("MINDMG");
+        myMaxDmg = theRS.getInt("MAXDMG");
+    }
+
+
     //This returns string so that it can more easily be printed when called.
     public String attack(final Character theDefender){
         //This random object will be used to perform a complex random operation with damage range.
@@ -42,8 +60,28 @@ public abstract class Character{
         return myHitPoints;
     }
 
+    public int getMaxHealth(){
+        return myMaxHealth;
+    }
+
     public float getMyAttackSpeed() {
         return myAttackSpeed;
+    }
+
+    protected float getMyHitChance(){
+        return myHitChance;
+    }
+
+    protected int getMyMinDmg() {
+        return myMinDmg;
+    }
+
+    protected int getMyMaxDmg() {
+        return myMaxDmg;
+    }
+
+    protected void setMyHitPoints(int myHitPoints) {
+        this.myHitPoints = myHitPoints;
     }
 
 }
