@@ -6,14 +6,18 @@ import java.util.Random;
 
 public abstract class Character{
     protected String myName;
-    //Hp: health, speed: attack turn, hitchance: possibility of attack landing, min/maxDMG: range of damage from successful attack
+    //Hp: health, speed: attack turn, hit chance: possibility of attack landing, min/maxDMG: range of damage from successful attack
     protected int myHitPoints;
-    protected int MAX_HEALTH;
+    protected int maxHealth;
     protected float myAttackSpeed;
     protected float myHitChance;
     protected int myMinDmg;
     protected int myMaxDmg;
 
+    protected Character(){
+
+    }
+    //This returns string so that it can more easily be printed when called.
     public String attack(final Character theDefender){
         //This random object will be used to perform a complex random operation with damage range.
         final Random r = new Random();
@@ -38,23 +42,8 @@ public abstract class Character{
         return myHitPoints;
     }
 
-    public int getMaxHealth(){
-        return MAX_HEALTH;
-    }
-
     public float getMyAttackSpeed() {
         return myAttackSpeed;
     }
 
-    public float getMyHitChance() {
-        return myHitChance;
-    }
-
-    public int getMyMinDmg() {
-        return myMinDmg;
-    }
-
-    public int getMyMaxDmg() {
-        return myMaxDmg;
-    }
 }

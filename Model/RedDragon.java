@@ -21,9 +21,10 @@ public class RedDragon extends Guardian {
 
         ResultSet rs = statement.executeQuery("SELECT * FROM guardian_table WHERE NAME ='RED_DRAGON' ");
 
-        loadGuardian(connection, rs);
+        loadGuardian(rs);
 
         connection.close();
+        myPillar = "Pillar of Inheritance";
     }
 
     @Override

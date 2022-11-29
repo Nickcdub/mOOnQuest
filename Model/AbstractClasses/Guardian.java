@@ -5,25 +5,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public abstract class Guardian extends SpecialCharacter {
-    public String pillar;
+    protected String myPillar;
 
     @Override
-    public String damage(int theDamage) {
+    public String damage(final int theDamage) {
         myHitPoints = myHitPoints - theDamage;
         return myName + " took " + theDamage + " damage.";
     }
 
-    public void loadGuardian(Connection connection, ResultSet rs) throws SQLException {
-        myName = rs.getString("NAME");
-        myHitPoints = MAX_HEALTH = rs.getInt("HP");
-        myAttackSpeed = rs.getInt("SPEED");
-        myHitChance = rs.getFloat("HITCHANCE");
-        myUltChance = rs.getFloat("SKILLCHANCE");
-        myMinDmg = rs.getInt("MINDMG");
-        myMaxDmg = rs.getInt("MAXDMG");
+    protected void loadGuardian(ResultSet theRS) throws SQLException {
+        myName = theRS.getString("NAME");
+        myHitPoints = maxHealth = theRS.getInt("HP");
+        myAttackSpeed = theRS.getInt("SPEED");
+        myHitChance = theRS.getFloat("HITCHANCE");
+        myUltChance = theRS.getFloat("SKILLCHANCE");
+        myMinDmg = theRS.getInt("MINDMG");
+        myMaxDmg = theRS.getInt("MAXDMG");
     }
 
     public String toString() {
-        return "GUARDIAN:" + myName + " HP:" + myHitPoints + "/" + MAX_HEALTH + " SPEED:" + myAttackSpeed + " ACCURACY:" + myHitChance + " ULTCHANCE:" + myUltChance;
+        return "GUARDIAN:" + myName + " HP:" + myHitPoints + "/" + maxHealth + " SPEED:" + myAttackSpeed + " ACCURACY:" + myHitChance + " ULTCHANCE:" + myUltChance;
+    }
+
+    public String getPillar() {
+        return myPillar;
     }
 }

@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.Random;
 
 public class Cerberus extends Guardian implements Blockable {
-    public float myBlockChance;
+    private float myBlockChance;
 
     public Cerberus() throws SQLException {
         loadCerberus();
@@ -25,17 +25,18 @@ public class Cerberus extends Guardian implements Blockable {
 
         ResultSet rs = statement.executeQuery("SELECT * FROM guardian_table WHERE NAME ='CERBERUS' ");
 
-        loadGuardian(connection, rs);
+        loadGuardian( rs);
 
         //Borrow block chance from knight.
         ResultSet set = statement.executeQuery("SELECT * FROM hero_table WHERE NAME = 'KNIGHT'");
         myBlockChance = set.getFloat("BLOCKCHANCE");
+        myPillar = "Pillar of Encapsulation";
 
         connection.close();
     }
 
     @Override
-    public String ultimate(Character theDefender) {
+    public String ultimate(final Character theDefender) {
         //If our random value is not within our chance range, do nothing, the hit misses
         if (Math.random() < myUltChance) return myName + " Missed Multi-Bite...\n";
         final Random r = new Random();
@@ -44,20 +45,20 @@ public class Cerberus extends Guardian implements Blockable {
 
     }
 
-    public String damage(int theDamage) {
+    public String damage(final int theDamage) {
         int result = block(theDamage);
         myHitPoints = myHitPoints - result;
         return result == 0 ? myName + " blocked all incoming damage!\n" : myName + " took " + theDamage + " damage!\n";
     }
 
     @Override
-    public int block(int theDamage) {
+    public int block(final int theDamage) {
         return Math.random() <= myBlockChance ? 0 : theDamage;
     }
 
     @Override
     public String toString() {
-        return "GUARDIAN:" + myName + " HP:" + myHitPoints + "/" + MAX_HEALTH + " SPEED:" + myAttackSpeed + " ACCURACY:" + myHitChance + " ULTCHANCE:" + myUltChance + " BLOCKCHANCE: " + myBlockChance;
+        return "GUARDIAN:" + myName + " HP:" + myHitPoints + "/" + maxHealth + " SPEED:" + myAttackSpeed + " ACCURACY:" + myHitChance + " ULTCHANCE:" + myUltChance + " BLOCKCHANCE: " + myBlockChance;
     }
 
 }

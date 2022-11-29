@@ -6,27 +6,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Inventory {
-    private final Map<String, Integer> myInventory;
+    private final Map<String, Integer> INVENTORY;
 
     public Inventory() {
-        myInventory = new HashMap<>();
-        myInventory.put("Health Potion", 0);
-        myInventory.put("Vision Potion", 0);
-    }
-
-    @Override
-    public String toString() {
-        return "[ Health Potions: " + myInventory.get("Health Potion") + ", Vision Potions: " + myInventory.get("Vision Potion") + " ]";
+        INVENTORY = new HashMap<>();
+        INVENTORY.put("Health Potion", 0);
+        INVENTORY.put("Vision Potion", 0);
     }
 
     public void addItem(final Item theItem) {
-        myInventory.put(theItem.toString(), myInventory.get(theItem.toString()) + 1);
+        INVENTORY.put(theItem.toString(), INVENTORY.get(theItem.toString()) + 1);
         System.out.println(theItem+" added to Inventory!");
     }
 
     public void removeItem(final Item theItem) {
-        if(myInventory.get(theItem.toString()) > 0) {
-            myInventory.put(theItem.toString(), myInventory.get(theItem.toString()) - 1);
+        if(INVENTORY.get(theItem.toString()) > 0) {
+            INVENTORY.put(theItem.toString(), INVENTORY.get(theItem.toString()) - 1);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "[ Health Potions: " + INVENTORY.get("Health Potion") + ", Vision Potions: " + INVENTORY.get("Vision Potion") + " ]";
     }
 }

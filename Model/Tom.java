@@ -24,22 +24,23 @@ public class Tom extends Guardian {
 
         ResultSet rs = statement.executeQuery("SELECT * FROM guardian_table WHERE NAME ='TOM' ");
 
-        loadGuardian(connection, rs);
+        loadGuardian(rs);
 
         connection.close();
+        myPillar = "Pillar of Abstraction";
     }
 
-    public String heal(int myMax, int myMin) {
+    private String heal(int theMax, int theMin) {
         Random r = new Random();
-        int result = r.nextInt(myMax - myMin) + myMin;
+        int result = r.nextInt(theMax - theMin) + theMin;
 
         //If hitpoints are healed beyond maxHealth, reset back at maxHealth;
-        myHitPoints = myHitPoints + result < MAX_HEALTH ? myHitPoints + result : MAX_HEALTH;
-        return myHitPoints == MAX_HEALTH ? myName + " healed to Max Health!" : myName + " healed for " + result + " HP!\n";
+        myHitPoints = myHitPoints + result < maxHealth ? myHitPoints + result : maxHealth;
+        return myHitPoints == maxHealth ? myName + " healed to Max Health!" : myName + " healed for " + result + " HP!\n";
     }
 
     @Override
-    public String ultimate(Character theDefender) {
+    public String ultimate(final Character theDefender) {
 
         //If our random value is not within our chance range, do nothing, the hit misses
         if (Math.random() < myUltChance) return myName + " Missed mOOn Lecture...\n";

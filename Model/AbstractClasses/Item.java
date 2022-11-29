@@ -1,7 +1,7 @@
 package Model.AbstractClasses;
 
 public abstract class Item {
-    public String myPotionName;
+    protected String myPotionName;
 
     public Item(){
 
