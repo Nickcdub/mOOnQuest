@@ -25,10 +25,42 @@ public class GameFrame extends JFrame {
     }
 
     public void showMap(/*final Character hero,*/ final Maze theMaze) {
+        hideComponents();
         final MapPanel myMap = new MapPanel(theMaze, 400);
         myMainPanel.add(myMap, BorderLayout.CENTER);
         setVisible(true);
-
     }
 
+    public void showIntro() {
+        final IntroPanel localIntro = new IntroPanel(400, this);
+        myMainPanel.add(localIntro, BorderLayout.CENTER);
+        setVisible(true);
+    }
+
+    public void showCharacter() {
+        hideComponents();
+        final CharacterPanel localCharacter = new CharacterPanel(400, this);
+        myMainPanel.add(localCharacter, BorderLayout.CENTER);
+        setVisible(true);
+    }
+
+    public void showLoad() {
+        hideComponents();
+        // not implemented;
+    }
+
+    public void showDifficulty() {
+        hideComponents();
+        final DifficultyPanel localDifficulty = new DifficultyPanel(400, this);
+        myMainPanel.add(localDifficulty, BorderLayout.CENTER);
+        setVisible(true);
+    }
+
+    private void hideComponents() {
+        Component[] localComponents = myMainPanel.getComponents();
+        for (Component c:
+                localComponents) {
+            c.setVisible(false);
+        }
+    }
 }

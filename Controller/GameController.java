@@ -27,6 +27,7 @@ public class GameController {
 
     void intro() throws SQLException {
         frame = new GameFrame();
+        frame.showIntro();
         Scanner sc = new Scanner(System.in);
         String input;
         System.out.println("Welcome to mOOn Quest, please use the keyboard to type a single character input.\n" +
@@ -40,6 +41,7 @@ public class GameController {
     }
 
     void characterSelect() throws SQLException {
+        frame.showCharacter();
         Scanner sc = new Scanner(System.in);
         String input;
         System.out.print("Please choose a character!\n" +
@@ -57,6 +59,7 @@ public class GameController {
     }
 
     void difficultySelect() throws SQLException {
+        frame.showDifficulty();
         Scanner sc = new Scanner(System.in);
         String input;
         System.out.print("Please choose a difficulty!\n" +
