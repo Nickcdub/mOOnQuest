@@ -341,7 +341,7 @@ public class Maze {
             }
 
             if(myTrap){
-                HERO.trap(15);
+                HERO.trap(20);
                 myTrap = false;
                 if(HERO.getHealth()<0) return;
             }

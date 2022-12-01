@@ -34,7 +34,7 @@ public abstract class Hero extends SpecialCharacter implements Blockable {
 
     public void trap(final int theDamage){
         setMyHitPoints(getHealth() - theDamage);
-        System.out.println(getMyName()+" was ensared by a trap and took "+theDamage+" damage!");
+        System.out.println(getMyName()+" was ensnared by a trap and took "+theDamage+" damage!");
     }
 
     public String heal(final int theMax, final int theMin) {
@@ -42,7 +42,7 @@ public abstract class Hero extends SpecialCharacter implements Blockable {
         int result = r.nextInt(theMax - theMin) + theMin;
 
         //If hitpoints are healed beyond maxHealth, reset back at maxHealth;
-        setMyHitPoints(getHealth() + result < getMaxHealth() ? getHealth() + result : getMaxHealth());
+        setMyHitPoints(Math.min(getHealth() + result,getMaxHealth()));
         return getHealth() == getMaxHealth() ? getMyName() + " healed to Max Health!\n" : getMyName() + " healed for " + result + " HP!\n";
     }
 

@@ -1,21 +1,18 @@
 package Controller;
 
 import Model.*;
-import View.GameFrame;
-import View.Map;
 
+import java.io.IOException;
 import java.sql.SQLException;
-
-import static Model.CharacterConstants.MonsterType.*;
 
 public class Main {
 
-    public static void main(String[] args) throws SQLException{
-       /* Knight knight = new Knight();
+    public static void main(String[] args) throws SQLException, IOException {
+        Knight knight = new Knight();
         Mender mender = new Mender();
         Assassin assassin = new Assassin();
 
-        Monster ogre = new Monster(OGRE);
+        /*Monster ogre = new Monster(OGRE);
         Monster goblin = new Monster(GOBLIN);
         Monster direwolf = new Monster(DIREWOLF);
 
@@ -40,11 +37,11 @@ public class Main {
         System.out.println(hydra);*/
 
 
-        /*Maze maze = new Maze(4,3,new Assassin());
-        GameFrame gui = new GameFrame();
-        gui.showMap(maze,400);*/
+       /* Maze maze = new Maze(4,3,new Assassin());
+        GameFrame gui = new GameFrame(800,800);
+        gui.characterSelectPanel();*/
 
 
-        GameController controller = new GameController();
+       GameController controller = new GameController();
     }
 }
