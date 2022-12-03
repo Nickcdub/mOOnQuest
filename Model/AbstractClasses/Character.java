@@ -72,11 +72,11 @@ public abstract class Character{
         return myHitChance;
     }
 
-    protected int getMyMinDmg() {
+    public int getMyMinDmg() {
         return myMinDmg;
     }
 
-    protected int getMyMaxDmg() {
+    public int getMyMaxDmg() {
         return myMaxDmg;
     }
 

@@ -1,1 +1,0 @@
-Do not just toss these images into your src file! They must be added to the project itself. Just drag and drop the individual images into your IDE project folder.

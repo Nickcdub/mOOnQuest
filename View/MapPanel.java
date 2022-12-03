@@ -18,24 +18,45 @@ public class MapPanel extends JPanel {
     private final Hero HERO;
     protected MapPanel(final Maze theMaze, final int thePanelSize, final Hero theHero) throws IOException {
 
-        //This panel will hold our maze map
+        //This panel will hold our maze map and activity log
         setBackground(Color.BLACK);
+        setLayout(new BorderLayout());
 
         MAZE = theMaze;
         PANEL_SIZE = thePanelSize;
         HERO = theHero;
+        //left maze panel
+        JPanel mazePanel = new JPanel();
+        //right side panel
+        JPanel sidePanel = new JPanel();
+        JPanel movePanel = new JPanel();
+        JTextArea txt = new JTextArea();
+        JScrollPane log = new JScrollPane(txt);
 
-        //Set grid layout for our maze grid
-        setLayout(new GridLayout(theMaze.getRows() + 1, theMaze.getColumns() + 1));
+        //Set grid layout for our maze grid, borderLayout for our sidePanel
+        mazePanel.setLayout(new GridLayout(theMaze.getRows() + 1, theMaze.getColumns() + 1));
+        sidePanel.setLayout(new BorderLayout());
+
+        //SubPanels of sidePanel
+        movePanel.setLayout(new BorderLayout());
+        movePanel.add(new JButton("North"),BorderLayout.NORTH);
+        movePanel.add(new JButton("West"),BorderLayout.WEST);
+        movePanel.add(new JButton("East"),BorderLayout.EAST);
+        movePanel.add(new JButton("South"),BorderLayout.SOUTH);
+
+        log.setVerticalScrollBarPolicy(log.VERTICAL_SCROLLBAR_ALWAYS);
+        log.setHorizontalScrollBarPolicy(log.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         //Create RegionPanels and add them to grid
         for (int i = 0; i < theMaze.getRows(); i++) {
             for (int j = 0; j < theMaze.getColumns(); j++) {
-                add(new RegionPanel(theMaze, i, j));
+                mazePanel.add(new RegionPanel(theMaze, i, j));
             }
         }
 
-        //setOpaque(false);
+
+        add(mazePanel);
+
         setPreferredSize(new Dimension(thePanelSize, thePanelSize));
     }
 
