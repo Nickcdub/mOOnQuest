@@ -79,6 +79,7 @@ public class Maze {
         //Initialize regions and clear 0,0 (It will be our entrance)
         initializeGrid(GRID);
         getRegion(0,0).clearRoom();
+        getRegion(0,0).myVisible = true;
 
         //Generate our maze with stationary bosses
         generateMaze();
@@ -191,6 +192,7 @@ public class Maze {
     public void move(final String theDirection) throws SQLException {
         Region newRoom;
 
+
         switch (theDirection){
             case "EAST" ->{
                 if(index(HERO_LOCATION[0], HERO_LOCATION[1]+1)==-1) throw new IndexOutOfBoundsException("Controller should not read in EAST if EAST is not an option, Location: "+(HERO_LOCATION[0])+","+(HERO_LOCATION[1]+1));
@@ -211,6 +213,7 @@ public class Maze {
             default ->throw new IllegalArgumentException("There are 4 possible Directions: NORTH, SOUTH, EAST, WEST. Input: "+theDirection);
         }
         newRoom = getRegion(HERO_LOCATION[0], HERO_LOCATION[1]);
+        getRegion(HERO_LOCATION[0], HERO_LOCATION[1]).myVisible = true;
         if(!newRoom.hasLoot()) {
             myEnemy = null;
             myBoss = null;
@@ -242,6 +245,9 @@ public class Maze {
     }
     public boolean getRegionPotion(final int theRow, final int theCol){
         return getRegion(theRow,theCol).myPotion;
+    }
+    public boolean getRegionVisibility(final int theRow, final int theCol) {
+        return getRegion(theRow,theCol).myVisible ;
     }
 
     public int getRows() {
@@ -281,6 +287,9 @@ public class Maze {
         final private int ROW, COL;
         //Visited and Walls must be able to change as our generate method marches through regions
         private boolean myVisited;
+
+        //determines whether this region is visible or not to the hero.
+        private boolean myVisible;
         //make this private
         private final boolean[] WALLS;
 
@@ -302,6 +311,7 @@ public class Maze {
             WALLS = new boolean[]{true, true, true, true};
             myLoot = true;
 
+            myVisible = false;
 
             //generate potions, traps, and monsters
             myPotion = Math.random() < 0.85;

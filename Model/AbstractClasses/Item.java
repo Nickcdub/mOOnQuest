@@ -6,7 +6,6 @@ public abstract class Item {
     public Item(){
 
     }
-    public abstract void useEffect(final Hero theHero);
 
     public String toString() {
         return myPotionName;

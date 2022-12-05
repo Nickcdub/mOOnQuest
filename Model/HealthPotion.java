@@ -8,8 +8,7 @@ public class HealthPotion extends Item {
         myPotionName = "Health Potion";
     }
 
-    @Override
     public void useEffect(Hero theHero) {
-        theHero.heal(50,30);
+        System.out.print(theHero.heal(50,30));
     }
 }

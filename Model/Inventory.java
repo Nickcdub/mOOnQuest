@@ -19,10 +19,21 @@ public class Inventory {
         System.out.println(theItem+" added to Inventory!");
     }
 
-    public void removeItem(final Item theItem) {
-        if(INVENTORY.get(theItem.toString()) > 0) {
-            INVENTORY.put(theItem.toString(), INVENTORY.get(theItem.toString()) - 1);
+    public void removeItem(final String theItem) {
+        if(INVENTORY.get(theItem) > 0) {
+            INVENTORY.put(theItem, INVENTORY.get(theItem) - 1);
         }
+    }
+
+    public int getSize(){
+        int size = 0;
+        if(INVENTORY.get("Health Potion")>0) size++;
+        if(INVENTORY.get("Vision Potion")>0) size++;
+        return INVENTORY.size();
+    }
+
+    public int getItem(final String item){
+        return INVENTORY.get(item);
     }
 
     @Override

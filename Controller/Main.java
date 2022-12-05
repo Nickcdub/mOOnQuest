@@ -16,6 +16,8 @@ public class Main {
         Mender mender = new Mender();
         Assassin assassin = new Assassin();
 
+        //knight.getInventory().addItem(new HealthPotion());
+        //knight.getInventory().addItem(new VisionPotion());
         /*Monster ogre = new Monster(OGRE);
         Monster goblin = new Monster(GOBLIN);
         Monster direwolf = new Monster(DIREWOLF);
@@ -43,10 +45,11 @@ public class Main {
 
         /*Maze maze = new Maze(4,3,new Assassin());
         GameFrame gui = new GameFrame(800,800);
-        gui.characterSelectPanel();*/
+        gui.inventoryPanel(knight);*/
 
 
        GameController controller = new GameController();
+
 
         //GameFrame gui = new GameFrame(800,800);
         //gui.battlePanel(new Mender(),new Cerberus());
