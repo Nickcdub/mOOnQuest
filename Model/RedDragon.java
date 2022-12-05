@@ -21,7 +21,7 @@ public class RedDragon extends Guardian {
 
         ResultSet rs = statement.executeQuery("SELECT * FROM guardian_table WHERE NAME ='RED_DRAGON' ");
 
-        loadGuardian(connection, rs);
+        loadGuardian(rs);
 
         connection.close();
     }
@@ -29,7 +29,7 @@ public class RedDragon extends Guardian {
     @Override
     public String ultimate(final Character theDefender) {
         //If our random value is not within our chance range, do nothing, the hit misses
-        if (Math.random() < myUltChance) return myName + " Missed Incinerate...\n";
+        if (Math.random() < getMyUltChance()) return getMyName() + " Missed Incinerate...\n";
         return "Incinerate! " + (theDefender.damage(70));
     }
 }

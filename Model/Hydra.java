@@ -4,6 +4,7 @@ import Model.AbstractClasses.Character;
 import Model.AbstractClasses.Guardian;
 import Model.Interfaces.Healable;
 
+import java.awt.*;
 import java.sql.*;
 import java.util.Random;
 
@@ -24,24 +25,23 @@ public class Hydra extends Guardian implements Healable {
         ResultSet rs = statement.executeQuery("SELECT * FROM guardian_table WHERE NAME ='HYDRA' ");
 
         //Load guardian stats
-        loadGuardian(connection, rs);
+        loadGuardian( rs);
 
 
         connection.close();
     }
 
-    @Override
-    public String heal(int myMax, int myMin) {
+    public String heal(final int theMax, final int theMin) {
         Random r = new Random();
-        int result = r.nextInt(myMax - myMin) + myMin;
+        int result = r.nextInt(theMax - theMin) + theMin;
 
         //If hitpoints are healed beyond maxHealth, reset back at maxHealth;
-        myHitPoints = myHitPoints + result < MAX_HEALTH ? myHitPoints + result : MAX_HEALTH;
-        return myHitPoints == MAX_HEALTH ? myName + " healed to Max Health!" : myName + " healed for " + result + " HP!\n";
+        setMyHitPoints(getHealth() + result < getMaxHealth() ? getHealth() + result : getMaxHealth());
+        return getHealth() == getMaxHealth() ? getMyName() + " healed to Max Health!\n" : getMyName() + " healed for " + result + " HP!\n";
     }
 
     @Override
-    public String ultimate(Character theDefender) {
+    public String ultimate(final Character theDefender) {
         return heal(80, 40);
     }
 }

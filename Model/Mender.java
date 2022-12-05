@@ -31,7 +31,7 @@ public class Mender extends Hero {
     //Ultimate heals mender between 65 and 75 health
     @Override
     public String ultimate(Character theDefender) {
-        if (Math.random() > myUltChance) return myName + " Missed Heal...";
+        if (Math.random() > getMyUltChance()) return getMyName() + " Missed Heal...";
         return heal(75, 65);
     }
 

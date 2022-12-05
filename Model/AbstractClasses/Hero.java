@@ -10,18 +10,21 @@ import java.sql.SQLException;
 import java.util.Random;
 
 public abstract class Hero extends SpecialCharacter implements Blockable {
-    protected final Inventory myInventory;
-    protected float myBlockChance;
+    private final Inventory INVENTORY;
+    private float myBlockChance;
+    private int myPillarCount;
 
     protected Hero() {
-        myInventory = new Inventory();
+        INVENTORY = new Inventory();
+        myBlockChance = 0;
+        myPillarCount = 0;
     }
 
 
     public String damage(final int theDamage) {
         int result = block(theDamage);
-        myHitPoints = myHitPoints - result;
-        return result == 0 ? myName + " blocked all incoming damage!\n" : myName + " took " + theDamage + " damage!\n";
+        setMyHitPoints( getHealth() - result);
+        return result == 0 ? getMyName() + " blocked all incoming damage!\n" : getMyName() + " took " + theDamage + " damage!\n";
     }
 
     @Override
@@ -29,36 +32,37 @@ public abstract class Hero extends SpecialCharacter implements Blockable {
         return Math.random() <= myBlockChance ? 0 : theDamage;
     }
 
-    public Inventory getInventory() {
-        return myInventory;
-    }
-
     public void trap(final int theDamage){
-        myHitPoints = myHitPoints - theDamage;
-        System.out.println(myName+" was ensared by a trap and took "+theDamage+" damage!");
+        setMyHitPoints(getHealth() - theDamage);
+        System.out.println(getMyName()+" was ensnared by a trap and took "+theDamage+" damage!");
     }
 
-    public String heal(final int myMax, final int myMin) {
+    public String heal(final int theMax, final int theMin) {
         Random r = new Random();
-        int result = r.nextInt(myMax - myMin) + myMin;
+        int result = r.nextInt(theMax - theMin) + theMin;
 
         //If hitpoints are healed beyond maxHealth, reset back at maxHealth;
-        myHitPoints = myHitPoints + result < MAX_HEALTH ? myHitPoints + result : MAX_HEALTH;
-        return myHitPoints == MAX_HEALTH ? myName + " healed to Max Health!\n" : myName + " healed for " + result + " HP!\n";
+        setMyHitPoints(Math.min(getHealth() + result,getMaxHealth()));
+        return getHealth() == getMaxHealth() ? getMyName() + " healed to Max Health!\n" : getMyName() + " healed for " + result + " HP!\n";
     }
 
-    protected void loadHero(final ResultSet rs) throws SQLException {
-        myName = rs.getString("NAME");
-        myHitPoints = MAX_HEALTH = rs.getInt("HP");
-        myAttackSpeed = rs.getInt("SPEED");
-        myHitChance = rs.getFloat("HITCHANCE");
-        myBlockChance = rs.getFloat("BLOCKCHANCE");
-        myMinDmg = rs.getInt("MINDMG");
-        myMaxDmg = rs.getInt("MAXDMG");
-        myUltChance = rs.getFloat("ULTCHANCE");
+    protected void loadHero(final ResultSet theRS) throws SQLException {
+        super.loadSpecialCharacter(theRS);
+        myBlockChance = theRS.getFloat("BLOCKCHANCE");
+    }
+
+    public void addPillar(){
+        myPillarCount++;
+    }
+
+    public Inventory getInventory() {
+        return INVENTORY;
+    }
+    public int getPillarCount(){
+        return myPillarCount;
     }
 
     public String toString() {
-        return "CLASS:" + myName + " HP:" + myHitPoints + "/" + MAX_HEALTH + " SPEED:" + myAttackSpeed + " ACCURACY:" + myHitChance + " PROTECTION:" + myBlockChance;
+        return "CLASS:" + getMyName() + " HP:" + getHealth() + "/" + getMaxHealth() + " SPEED:" + getMyAttackSpeed() + " ACCURACY:" + getMyHitChance() + " PROTECTION:" + myBlockChance;
     }
 }

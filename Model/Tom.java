@@ -24,28 +24,28 @@ public class Tom extends Guardian {
 
         ResultSet rs = statement.executeQuery("SELECT * FROM guardian_table WHERE NAME ='TOM' ");
 
-        loadGuardian(connection, rs);
+        loadGuardian(rs);
 
         connection.close();
     }
 
-    public String heal(int myMax, int myMin) {
+    private String heal(int theMax, int theMin) {
         Random r = new Random();
-        int result = r.nextInt(myMax - myMin) + myMin;
+        int result = r.nextInt(theMax - theMin) + theMin;
 
         //If hitpoints are healed beyond maxHealth, reset back at maxHealth;
-        myHitPoints = myHitPoints + result < MAX_HEALTH ? myHitPoints + result : MAX_HEALTH;
-        return myHitPoints == MAX_HEALTH ? myName + " healed to Max Health!" : myName + " healed for " + result + " HP!\n";
+        setMyHitPoints(getHealth() + result < getMaxHealth() ? getHealth() + result : getMaxHealth());
+        return getHealth() == getMaxHealth() ? getMyName() + " healed to Max Health!\n" : getMyName() + " healed for " + result + " HP!\n";
     }
 
     @Override
-    public String ultimate(Character theDefender) {
+    public String ultimate(final Character theDefender) {
 
         //If our random value is not within our chance range, do nothing, the hit misses
-        if (Math.random() < myUltChance) return myName + " Missed mOOn Lecture...\n";
+        if (Math.random() < getMyUltChance()) return getMyName() + " Missed mOOn Lecture...\n";
         final Random hit = new Random();
 
-        int damage = (hit.nextInt(myMaxDmg - myMinDmg) + myMinDmg);
+        int damage = (hit.nextInt(getMyMaxDmg() - getMyMinDmg()) + getMyMinDmg());
 
         return "Y'AIN'T GONNA NEED IT! " + (theDefender.damage(damage)) + (heal(50, 30));
     }

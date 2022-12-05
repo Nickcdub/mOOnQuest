@@ -36,16 +36,16 @@ public class Assassin extends Hero {
        int hitCount = 0;
        String result;
 
-       if(Math.random()> myUltChance) hitCount++;
-        if(Math.random()> myUltChance) hitCount++;
+       if(Math.random()> getMyUltChance()) hitCount++;
+        if(Math.random()> getMyUltChance()) hitCount++;
 
         Random r = new Random();
 
 
         switch(hitCount){
-            case 0 -> result = myName+" Missed Rhythm Echo...\n"; //failed
-            case 1 ->  result = "Partial Success:Single Hit!\n"+theDefender.damage(r.nextInt(myMaxDmg - myMinDmg) + myMinDmg);//partial success
-            case 2 ->  result = "Complete Success: Double Hit!\n"+theDefender.damage(r.nextInt(myMaxDmg - myMinDmg) + myMinDmg)+theDefender.damage(r.nextInt(myMaxDmg - myMinDmg) + myMinDmg);//complete success
+            case 0 -> result = getMyName()+" Missed Rhythm Echo...\n"; //failed
+            case 1 ->  result = "Partial Success:Single Hit!\n"+theDefender.damage(r.nextInt(getMyMaxDmg() - getMyMinDmg()) + getMyMinDmg());//partial success
+            case 2 ->  result = "Complete Success: Double Hit!\n"+theDefender.damage(r.nextInt(getMyMaxDmg() - getMyMinDmg()) + getMyMinDmg())+theDefender.damage(r.nextInt(getMyMaxDmg() - getMyMinDmg()) + getMyMinDmg());//complete success
             default -> throw new NumberFormatException("HitCount should be >=2, hitCount: "+hitCount);
         }
         return result;
