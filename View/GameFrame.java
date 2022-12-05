@@ -36,9 +36,16 @@ public class GameFrame extends JFrame {
         add(MAIN_PANEL);
     }
 
-    public void showMap(final Maze theMaze, final Hero theHero) throws IOException {
+    public void introPanel() throws IOException {
         clearPanels();
-        final MapPanel myMap = new MapPanel(theMaze, 400, theHero);
+        IntroPanel intro = new IntroPanel();
+        MAIN_PANEL.add(intro, BorderLayout.CENTER);
+        setVisible(true);
+    }
+
+    public void showMap(final Maze theMaze, final Hero theHero, final StringBuilder theBuilder) throws IOException {
+        clearPanels();
+        final MapPanel myMap = new MapPanel(theMaze, 400, theHero, theBuilder);
         MAIN_PANEL.add(myMap, BorderLayout.CENTER);
         setVisible(true);
 
@@ -62,6 +69,13 @@ public class GameFrame extends JFrame {
         SELECT.add(assassin);
 
         MAIN_PANEL.add(SELECT,BorderLayout.CENTER);
+        setVisible(true);
+    }
+
+    public void difficultyPanel() throws IOException {
+        clearPanels();
+        DifficultyPanel diff = new DifficultyPanel();
+        MAIN_PANEL.add(diff,BorderLayout.CENTER);
         setVisible(true);
     }
 
@@ -94,6 +108,20 @@ public class GameFrame extends JFrame {
 
         BattlePanel battle = new BattlePanel(hero,enemy,background, theString);
         MAIN_PANEL.add(battle,BorderLayout.CENTER);
+        setVisible(true);
+    }
+
+    public void inventoryPanel(final Hero theHero) throws IOException {
+        clearPanels();
+        InventoryPanel inventory = new InventoryPanel(theHero);
+        MAIN_PANEL.add(inventory,BorderLayout.CENTER);
+        setVisible(true);
+    }
+
+    public void deathPanel(final String theMessage) throws IOException {
+        clearPanels();
+        DeathPanel death = new DeathPanel(theMessage);
+        MAIN_PANEL.add(death, BorderLayout.CENTER);
         setVisible(true);
     }
 
