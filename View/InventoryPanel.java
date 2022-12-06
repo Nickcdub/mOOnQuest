@@ -12,11 +12,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class InventoryPanel extends JPanel {
-    private final Hero HERO;
 
     InventoryPanel(final Hero theHero) throws IOException {
-       HERO = theHero;
-        Inventory inventory = HERO.getInventory();
+        Inventory inventory = theHero.getInventory();
         ImagePanel background = new ImagePanel(ImageIO.read(new File("Inventory.png")));
         JPanel items = new JPanel(new GridLayout(1,inventory.getSize()));
         JButton back = new JButton("Back");
@@ -49,7 +47,7 @@ public class InventoryPanel extends JPanel {
         add(background);
     }
 
-    private void addItem(final JPanel thePanel, final JButton theItemButton) throws IOException {
+    private void addItem(final JPanel thePanel, final JButton theItemButton) {
         theItemButton.setBorder(BorderFactory.createEmptyBorder());
         theItemButton.setContentAreaFilled(false);
         theItemButton.addActionListener(new GameController.InventoryInput());

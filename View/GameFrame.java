@@ -1,29 +1,25 @@
 package View;
 
-import Controller.GameController;
 import Model.*;
 import Model.AbstractClasses.Guardian;
 import Model.AbstractClasses.Hero;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
 public class GameFrame extends JFrame {
     private final JPanel MAIN_PANEL;
-    private int myWidth, myHeight;
+    private final int MY_WIDTH, MY_HEIGHT;
 
-    public GameFrame(final int theWidth, final int theHeight) throws IOException {
+    public GameFrame(final int theWidth, final int theHeight){
 
         //All other panels will be placed on this main panel
         MAIN_PANEL = new JPanel();
-        myWidth = theWidth;
-        myHeight = theHeight;
+        MY_WIDTH = theWidth;
+        MY_HEIGHT = theHeight;
 
         MAIN_PANEL.setBackground(Color.GREEN);
 
@@ -56,9 +52,9 @@ public class GameFrame extends JFrame {
         final JPanel SELECT = new JPanel();
         SELECT.setLayout(new GridLayout());
 
-        final CharacterPanel knight = new CharacterPanel(new Knight(),Color.decode("#204CC5") ,Color.decode("#455AC1"), myWidth/3, myHeight);
-        final CharacterPanel mender = new CharacterPanel(new Mender(),Color.decode("#2BA304"),Color.decode("#89DD6E"), myWidth/3, myHeight);
-        final CharacterPanel assassin = new CharacterPanel(new Assassin(),Color.decode("#AC2306"),Color.decode("#C96161"), myWidth/3, myHeight);
+        final CharacterPanel knight = new CharacterPanel(new Knight(),Color.decode("#204CC5") ,Color.decode("#455AC1"), MY_WIDTH /3, MY_HEIGHT);
+        final CharacterPanel mender = new CharacterPanel(new Mender(),Color.decode("#2BA304"),Color.decode("#89DD6E"), MY_WIDTH /3, MY_HEIGHT);
+        final CharacterPanel assassin = new CharacterPanel(new Assassin(),Color.decode("#AC2306"),Color.decode("#C96161"), MY_WIDTH /3, MY_HEIGHT);
 
         knight.setSelection();
         mender.setSelection();
@@ -79,14 +75,14 @@ public class GameFrame extends JFrame {
         setVisible(true);
     }
 
-    public void battlePanel(final Hero theHero, final Monster theDefender, final StringBuilder theString) throws IOException {
+    public void battlePanel(final Hero theHero, final Monster theDefender, final StringBuilder theBuilder) throws IOException {
     clearPanels();
 
         //Left and right panels will hold our two combatants
-        CharacterPanel hero = new CharacterPanel(theHero,Color.decode("#204CC5"),new Color(0,0,0,0),myWidth/3, myHeight);
-        CharacterPanel enemy = new CharacterPanel(theDefender,Color.decode("#DC143C"),new Color(0,0,0,0),myWidth/3, myHeight);
+        CharacterPanel hero = new CharacterPanel(theHero,Color.decode("#3DB4FF"),new Color(0,0,0,0), MY_WIDTH /3, MY_HEIGHT);
+        CharacterPanel enemy = new CharacterPanel(theDefender,Color.decode("#DC143C"),new Color(0,0,0,0), MY_WIDTH /3, MY_HEIGHT);
 
-        BattlePanel battle = new BattlePanel(hero,enemy,"Forest.png",theString);
+        BattlePanel battle = new BattlePanel(hero,enemy,"Forest.png",theBuilder);
 
         MAIN_PANEL.add(battle,BorderLayout.CENTER);
         setVisible(true);
@@ -95,8 +91,8 @@ public class GameFrame extends JFrame {
 
     public void battlePanel(final Hero theHero, final Guardian theDefender,final StringBuilder theString) throws IOException {
        clearPanels();
-        CharacterPanel hero = new CharacterPanel(theHero,Color.decode("#204CC5"),new Color(0,0,0,0),myWidth/3, myHeight);
-        CharacterPanel enemy = new CharacterPanel(theDefender,Color.decode("#81007F"),new Color(0,0,0,0),myWidth/3, myHeight);
+        CharacterPanel hero = new CharacterPanel(theHero,Color.decode("#3DB4FF"),new Color(0,0,0,0), MY_WIDTH /3, MY_HEIGHT);
+        CharacterPanel enemy = new CharacterPanel(theDefender,Color.decode("#CF54FF"),new Color(0,0,0,0), MY_WIDTH /3, MY_HEIGHT);
 
         String background = theDefender.getMyName();
         switch(background){
@@ -120,7 +116,7 @@ public class GameFrame extends JFrame {
 
     public void deathPanel(final String theMessage) throws IOException {
         clearPanels();
-        DeathPanel death = new DeathPanel(theMessage);
+        DeathPanel death = new DeathPanel(theMessage, MY_WIDTH,MY_HEIGHT);
         MAIN_PANEL.add(death, BorderLayout.CENTER);
         setVisible(true);
     }

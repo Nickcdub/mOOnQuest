@@ -5,13 +5,12 @@ import Controller.GameController;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 public class DeathPanel extends JPanel {
 
-    DeathPanel(final String theMessage) throws IOException {
+    DeathPanel(final String theMessage, final int theWidth, final int theHeight) throws IOException {
         ImagePanel grave = new ImagePanel(ImageIO.read(new File("Graveyard.png")));
         JPanel emptyCenter = new JPanel();
         JPanel south = new JPanel(new GridLayout(2,1));
@@ -34,7 +33,7 @@ public class DeathPanel extends JPanel {
 
         south.add(message);
         south.add(buttons);
-        south.setPreferredSize(new Dimension(100,300));
+        south.setPreferredSize(new Dimension(theWidth, (int) Math.floor(theHeight*0.3)));
         south.setOpaque(false);
 
         emptyCenter.setOpaque(false);

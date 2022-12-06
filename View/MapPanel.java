@@ -17,7 +17,8 @@ public class MapPanel extends JPanel {
     private final int PANEL_SIZE;
     private final Maze MAZE;
     private final Hero HERO;
-    protected MapPanel(final Maze theMaze, final int thePanelSize, final Hero theHero, final StringBuilder theBuilder) throws IOException {
+
+    MapPanel(final Maze theMaze, final int thePanelSize, final Hero theHero, final StringBuilder theBuilder) throws IOException {
 
         //This panel will hold our maze map and activity log
         setLayout(new BorderLayout());
@@ -26,7 +27,7 @@ public class MapPanel extends JPanel {
         PANEL_SIZE = thePanelSize;
         HERO = theHero;
         //left maze panel
-        JPanel mazePanel = new JPanel();
+        ImagePanel mazePanel = new ImagePanel(ImageIO.read(new File("Map.png")));
         //right side panel
         JPanel sidePanel = new JPanel();
         JPanel movePanel = new JPanel();
@@ -46,7 +47,7 @@ public class MapPanel extends JPanel {
 
         movePanel.setLayout(new BorderLayout());
 
-        //Creat North South East West buttons and add actionlisteners
+        //Creat North South East West buttons and add action listeners
         JButton north = new JButton("North");
         JButton west = new JButton("West");
         JButton inventory = new JButton("Inventory");
@@ -79,7 +80,7 @@ public class MapPanel extends JPanel {
 
         north.setPreferredSize(new Dimension(thePanelSize,thePanelSize/6));
         east.setPreferredSize(new Dimension(thePanelSize/5,thePanelSize/3));
-        inventory.setPreferredSize(new Dimension(thePanelSize*(3/5),thePanelSize/3));
+        inventory.setPreferredSize(new Dimension(0,thePanelSize/3));
         west.setPreferredSize(new Dimension(thePanelSize/5,thePanelSize/3));
         south.setPreferredSize(new Dimension(thePanelSize,thePanelSize/6));
 
@@ -120,7 +121,6 @@ public class MapPanel extends JPanel {
             int bottom = sizeFacter * (walls[3] ? 1 : 0);
             int right = sizeFacter * (walls[1] ? 1 : 0);
             setBorder(BorderFactory.createMatteBorder(top, left, bottom, right, Color.BLACK));
-            setBackground(Color.BLACK);
             if(!theMaze.getRegionVisibility(theRow,theCol)) {
                 setVisible(false);
                 setOpaque(false);

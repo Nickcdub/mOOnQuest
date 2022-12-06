@@ -1,7 +1,6 @@
 package View;
 
 import Controller.GameController;
-import Controller.UserInput;
 import Model.AbstractClasses.Character;
 
 import javax.imageio.ImageIO;
@@ -14,25 +13,13 @@ import java.io.IOException;
 public class CharacterPanel extends JPanel{
     private final Character CHARACTER;
     private final Color COLOR;
-    private Color myBackground = null;
-    private final int MY_WIDTH, MY_HEIGHT;
+    private final Color BACKGROUND;
+    private final int MY_WIDTH;
+    private final int MY_HEIGHT;
     private final JPanel PEDESTAL;
 
-    public CharacterPanel(final Character theCharacter, final Color theColor, final Color theBackground, final int theWidth, final int theHeight) throws IOException {
-        myBackground = theBackground;
-        CHARACTER = theCharacter;
-        COLOR = theColor;
-        MY_WIDTH = theWidth;
-        MY_HEIGHT = theHeight;
-        PEDESTAL = new JPanel();
-
-        setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(MY_WIDTH, MY_HEIGHT));
-        image();
-        pedestal();
-    }
-
-    public CharacterPanel(final Character theCharacter, final Color theColor, final int theWidth, final int theHeight) throws IOException {
+    CharacterPanel(final Character theCharacter, final Color theColor, final Color theBackground, final int theWidth, final int theHeight) throws IOException {
+        BACKGROUND = theBackground;
         CHARACTER = theCharacter;
         COLOR = theColor;
         MY_WIDTH = theWidth;
@@ -47,13 +34,13 @@ public class CharacterPanel extends JPanel{
 
     private void pedestal(){
         PEDESTAL.setBackground(COLOR);
-        PEDESTAL.setPreferredSize(new Dimension(MY_WIDTH,200));
+        PEDESTAL.setPreferredSize(new Dimension(MY_WIDTH,MY_HEIGHT/5));
         add(PEDESTAL, BorderLayout.SOUTH);
     }
 
     private void image() throws IOException {
         JPanel png = new JPanel();
-         if(myBackground!=null) png.setBackground(myBackground);
+         if(BACKGROUND !=null) png.setBackground(BACKGROUND);
 
         BufferedImage myPicture = ImageIO.read(new File(CHARACTER.getMyName()+".png"));
         JLabel picLabel = new JLabel(new ImageIcon(myPicture));
@@ -66,7 +53,7 @@ public class CharacterPanel extends JPanel{
         JButton select = new JButton(CHARACTER.getMyName());
         select.addActionListener(new GameController.HeroInput());
         select.setForeground(COLOR);
-        select.setPreferredSize(new Dimension(MY_WIDTH,100));
+        select.setPreferredSize(new Dimension(MY_WIDTH,MY_HEIGHT/10));
         PEDESTAL.add(select);
     }
 
