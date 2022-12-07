@@ -255,15 +255,18 @@ public class GameController {
     }
 
     private static void win() throws SQLException, IOException, InterruptedException {
-        System.out.println("\nAll four pillars retrieved! Thank you for playing!");
-        System.out.println("Play Again?");
-        System.out.print("y/n: ");
-        Scanner sc = new Scanner(System.in);
-        String input = sc.nextLine();
-        switch (input) {
-            case "y" -> intro();
-            case "n" -> exit();
-            default -> win();
+        myFrame.winPanel();
+        do {
+            Thread.sleep(200);
+        } while (WinInput.input == 0);
+        switch (WinInput.input) {
+            case 1 -> {
+                WinInput.input = 0;
+                myHero.clearPillarCount();
+                myMaze = null;
+                difficultySelect();
+            }
+            case 2 -> exit();
         }
     }
 
@@ -432,6 +435,21 @@ public class GameController {
             }
         }
 
+    }
+
+    public static class WinInput implements ActionListener {
+
+        private static int input;
+
+        public void actionPerformed(ActionEvent e) {
+            String name = e.getActionCommand();
+            input = 0;
+
+            switch (name) {
+                case "Keep Playing?" -> input = 1;
+                case "Touch Grass?" -> input = 2;
+            }
+        }
     }
 }
 

@@ -122,6 +122,13 @@ public class GameFrame extends JFrame {
         setVisible(true);
     }
 
+    public void winPanel() throws IOException {
+        clearPanels();
+        WinPanel win = new WinPanel(MY_WIDTH,MY_HEIGHT);
+        MAIN_PANEL.add(win, BorderLayout.CENTER);
+        setVisible(true);
+    }
+
     public void clearPanels(){
         MAIN_PANEL.removeAll();
     }
