@@ -19,9 +19,9 @@ public class DifficultyPanel extends JPanel {
         button.setOpaque(false);
 
         JLabel line1 = new JLabel("Please choose a difficulty!");
-        JLabel line2 = new JLabel("Bubble Blowin Baby: 4 by 4 maze, nothing too fancy, couple goblins, couple pillars.");
-        JLabel line3 = new JLabel("Amateur Explorer: Watched a lot of Dora as a kid, feel confident, 5 by 5 maze, goblins, wolves, and pillars.");
-        JLabel line4 = new JLabel(" Big Kids Table: You eat nails for breakfast... without any milk! 7 by 7 maze, goblins, wolves, ogres oh my! Oh, and pillars too.");
+        JLabel line2 = new JLabel("Bubble Blowin Baby: 5 by 5 maze, nothing too fancy, couple goblins, couple pillars.");
+        JLabel line3 = new JLabel("Amateur Explorer: Watched a lot of Dora as a kid, feel confident, 7 by 7 maze, goblins, wolves, and pillars.");
+        JLabel line4 = new JLabel(" Big Kids Table: You eat nails for breakfast... without any milk! 8 by 8 maze, goblins, wolves, ogres oh my! Oh, and pillars too.");
 
         line1.setPreferredSize(new Dimension(getWidth()/5,getHeight()/5));
         line2.setPreferredSize(new Dimension(getWidth()/5,getHeight()/5));

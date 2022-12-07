@@ -35,7 +35,7 @@ public abstract class Character{
     }
 
 
-    //This returns string so that it can more easily be printed when called.
+    //attack returns string so that it can more easily be printed when called.
     public String attack(final Character theDefender){
         //This random object will be used to perform a complex random operation with damage range.
         final Random r = new Random();

@@ -121,10 +121,19 @@ public class MapPanel extends JPanel {
             int bottom = sizeFacter * (walls[3] ? 1 : 0);
             int right = sizeFacter * (walls[1] ? 1 : 0);
             setBorder(BorderFactory.createMatteBorder(top, left, bottom, right, Color.BLACK));
+            //If region is not visible, don't show it
             if(!theMaze.getRegionVisibility(theRow,theCol)) {
                 setVisible(false);
                 setOpaque(false);
             } else setBackground(Color.decode("#F3EAD3"));
+
+            //If both the row and the column are 0, its the entrance, make it green
+            if(theRow+theCol == 0) {
+                setBackground(Color.decode("#A1E48F"));
+                add(new JLabel("<<ENTRANCE<<"));
+            }
+
+            //If the hero is on this space, set background to blue and add the hero's image
             if(theMaze.getHeroLocation()[0] == theRow && theMaze.getHeroLocation()[1] == theCol) {
                 setBackground(Color.decode("#016064"));
                 BufferedImage myPicture = ImageIO.read(new File(HERO.getMyName()+".png"));
@@ -134,6 +143,7 @@ public class MapPanel extends JPanel {
                 //picLabel.setPreferredSize(new Dimension(PANEL_SIZE/MAZE.getColumns(),PANEL_SIZE/MAZE.getRows()));
                 add(picLabel);
             }
+            //If guardian: make space purple, else if monster/hazard: make red, else if potion: gold
             if(theMaze.getRegionGuardian(theRow,theCol)) setBackground(Color.decode("#81007F"));
             else if(theMaze.getRegionMonster(theRow,theCol) || theMaze.getRegionTrap(theRow,theCol)) setBackground(Color.decode("#DC143C"));
             else if(theMaze.getRegionPotion(theRow,theCol)) setBackground(Color.decode("#d4af37"));

@@ -4,7 +4,6 @@ import Model.AbstractClasses.Character;
 import Model.AbstractClasses.Guardian;
 import Model.Interfaces.Healable;
 
-import java.awt.*;
 import java.sql.*;
 import java.util.Random;
 
@@ -35,8 +34,8 @@ public class Hydra extends Guardian implements Healable {
         Random r = new Random();
         int result = r.nextInt(theMax - theMin) + theMin;
 
-        //If hitpoints are healed beyond maxHealth, reset back at maxHealth;
-        setMyHitPoints(getHealth() + result < getMaxHealth() ? getHealth() + result : getMaxHealth());
+        //If hit points are healed beyond maxHealth, reset back at maxHealth;
+        setMyHitPoints(Math.min(getHealth() + result, getMaxHealth()));
         return getHealth() == getMaxHealth() ? getMyName() + " healed to Max Health!\n" : getMyName() + " healed for " + result + " HP!\n";
     }
 

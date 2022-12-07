@@ -282,6 +282,19 @@ public class Maze {
         return boss;
     }
 
+    String revealArea(){
+        int areaCount = 0;
+        for (int i = getHeroLocation()[0]-1; i <= getHeroLocation()[0]+1 ; i++) {
+            for (int j = getHeroLocation()[1]-1; j <= getHeroLocation()[1]+1 ; j++) {
+                if(index(i,j)!=-1 &&  getRegion(i,j).myVisible == false){
+                    getRegion(i,j).myVisible = true;
+                    areaCount++;
+                }
+            }
+        }
+        return "The Vision Potion revealed "+areaCount+" areas.";
+    }
+
 
     class Region {
         final private int ROW, COL;
@@ -314,7 +327,7 @@ public class Maze {
             myVisible = false;
 
             //generate potions, traps, and monsters
-            myPotion = Math.random() < 0.85;
+            myPotion = Math.random() < 0.8;
             myTrap = Math.random() < 0.1;
             myMonster = Math.random() < 0.25;
 
@@ -346,7 +359,7 @@ public class Maze {
             }
 
             if(myPotion) {
-                HERO.getInventory().addItem(Math.random() < 0.95 ? new HealthPotion() : new VisionPotion());
+                HERO.getInventory().addItem(Math.random() < 0.85 ? new HealthPotion() : new VisionPotion());
                 myPotion = false;
             }
 

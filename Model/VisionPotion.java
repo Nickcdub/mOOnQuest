@@ -8,7 +8,7 @@ public class VisionPotion extends Item {
     }
 
 
-    public void useEffect(Maze theMaze) {
-        //theHero.setVision(2);
+    public String useEffect(Maze theMaze) {
+        return theMaze.revealArea();
     }
 }

@@ -79,8 +79,8 @@ public class GameFrame extends JFrame {
     clearPanels();
 
         //Left and right panels will hold our two combatants
-        CharacterPanel hero = new CharacterPanel(theHero,Color.decode("#3DB4FF"),new Color(0,0,0,0), MY_WIDTH /3, MY_HEIGHT);
-        CharacterPanel enemy = new CharacterPanel(theDefender,Color.decode("#DC143C"),new Color(0,0,0,0), MY_WIDTH /3, MY_HEIGHT);
+        CharacterPanel hero = new CharacterPanel(theHero,Color.decode("#3DB4FF"),null, MY_WIDTH /3, MY_HEIGHT);
+        CharacterPanel enemy = new CharacterPanel(theDefender,Color.decode("#DC143C"),null, MY_WIDTH /3, MY_HEIGHT);
 
         BattlePanel battle = new BattlePanel(hero,enemy,"Forest.png",theBuilder);
 
@@ -91,14 +91,15 @@ public class GameFrame extends JFrame {
 
     public void battlePanel(final Hero theHero, final Guardian theDefender,final StringBuilder theString) throws IOException {
        clearPanels();
-        CharacterPanel hero = new CharacterPanel(theHero,Color.decode("#3DB4FF"),new Color(0,0,0,0), MY_WIDTH /3, MY_HEIGHT);
-        CharacterPanel enemy = new CharacterPanel(theDefender,Color.decode("#CF54FF"),new Color(0,0,0,0), MY_WIDTH /3, MY_HEIGHT);
+        CharacterPanel hero = new CharacterPanel(theHero,Color.decode("#3DB4FF"),null, MY_WIDTH /3, MY_HEIGHT);
+        CharacterPanel enemy = new CharacterPanel(theDefender,Color.decode("#CF54FF"),null, MY_WIDTH /3, MY_HEIGHT);
 
         String background = theDefender.getMyName();
         switch(background){
             case "HYDRA" -> background = "Swamp.png";
             case "RED_DRAGON" -> background = "Volcano.png";
             case "CERBERUS" -> background = "UnderWorld.png";
+            case "TOM" -> background = "Space.png";
             default -> background = "Forest.png";
         }
 

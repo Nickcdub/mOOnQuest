@@ -40,8 +40,8 @@ public class CharacterPanel extends JPanel{
 
     private void image() throws IOException {
         JPanel png = new JPanel();
-         if(BACKGROUND !=null) png.setBackground(BACKGROUND);
-
+        if(BACKGROUND !=null) png.setBackground(BACKGROUND);
+        else png.setOpaque(false);
         BufferedImage myPicture = ImageIO.read(new File(CHARACTER.getMyName()+".png"));
         JLabel picLabel = new JLabel(new ImageIcon(myPicture));
         png.add(picLabel);
@@ -87,3 +87,4 @@ public class CharacterPanel extends JPanel{
         return CHARACTER;
     }
 }
+

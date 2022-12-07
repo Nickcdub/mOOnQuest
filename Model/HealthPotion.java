@@ -8,7 +8,7 @@ public class HealthPotion extends Item {
         myPotionName = "Health Potion";
     }
 
-    public void useEffect(Hero theHero) {
-        System.out.print(theHero.heal(50,30));
+    public String useEffect(Hero theHero) {
+        return theHero.heal(50,30);
     }
 }
