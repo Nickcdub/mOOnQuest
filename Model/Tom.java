@@ -29,12 +29,12 @@ public class Tom extends Guardian {
         connection.close();
     }
 
-    private String heal(int theMax, int theMin) {
+    private String heal() {
         Random r = new Random();
-        int result = r.nextInt(theMax - theMin) + theMin;
+        int result = r.nextInt(50 - 30) + 30;
 
-        //If hitpoints are healed beyond maxHealth, reset back at maxHealth;
-        setMyHitPoints(getHealth() + result < getMaxHealth() ? getHealth() + result : getMaxHealth());
+        //If hit points are healed beyond maxHealth, reset back at maxHealth;
+        setMyHitPoints(Math.min(getHealth() + result, getMaxHealth()));
         return getHealth() == getMaxHealth() ? getMyName() + " healed to Max Health!\n" : getMyName() + " healed for " + result + " HP!\n";
     }
 
@@ -42,11 +42,11 @@ public class Tom extends Guardian {
     public String ultimate(final Character theDefender) {
 
         //If our random value is not within our chance range, do nothing, the hit misses
-        if (Math.random() < getMyUltChance()) return getMyName() + " Missed mOOn Lecture...\n";
+        if (Math.random() < getMyUltChance()) return getMyName() + " Missed Feature Lecture...\n";
         final Random hit = new Random();
 
         int damage = (hit.nextInt(getMyMaxDmg() - getMyMinDmg()) + getMyMinDmg());
 
-        return "Y'AIN'T GONNA NEED IT! " + (theDefender.damage(damage)) + (heal(50, 30));
+        return "Y'AIN'T GONNA NEED IT! " + (theDefender.damage(damage)) + (heal());
     }
 }

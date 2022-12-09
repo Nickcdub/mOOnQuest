@@ -29,7 +29,7 @@ public class Inventory {
         int size = 0;
         if(INVENTORY.get("Health Potion")>0) size++;
         if(INVENTORY.get("Vision Potion")>0) size++;
-        return INVENTORY.size();
+        return size;
     }
 
     public int getItem(final String item){

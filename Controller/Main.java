@@ -16,8 +16,8 @@ public class Main {
         Mender mender = new Mender();
         Assassin assassin = new Assassin();
 
-        //knight.getInventory().addItem(new HealthPotion());
-        //knight.getInventory().addItem(new VisionPotion());
+        knight.getInventory().addItem(new HealthPotion());
+        knight.getInventory().addItem(new VisionPotion());
         /*Monster ogre = new Monster(OGRE);
         Monster goblin = new Monster(GOBLIN);
         Monster direwolf = new Monster(DIREWOLF);
@@ -43,12 +43,33 @@ public class Main {
         System.out.println(hydra);*/
 
 
-        /*Maze maze = new Maze(4,3,new Assassin());
+       /* Maze maze = new Maze(4,3,new Assassin());
         GameFrame gui = new GameFrame(800,800);
         gui.inventoryPanel(knight);*/
 
+      //  System.out.println(UIManager.getSystemLookAndFeelClassName());
+        //Maintain the same look and feel for guis cross-platform.
+        try {
+            // Set System L&F
+            UIManager.setLookAndFeel(
+                    UIManager.getCrossPlatformLookAndFeelClassName());
+        }
+        catch (UnsupportedLookAndFeelException e) {
+            // handle exception
+        }
+        catch (ClassNotFoundException e) {
+            // handle exception
+        }
+        catch (InstantiationException e) {
+            // handle exception
+        }
+        catch (IllegalAccessException e) {
+            // handle exception
+        }
 
-       GameController controller = new GameController();
+       //GameController controller = new GameController();
+        GameFrame gui = new GameFrame(1200,1200);
+        gui.winPanel();
 
 
         //GameFrame gui = new GameFrame(800,800);

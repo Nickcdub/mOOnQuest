@@ -5,7 +5,6 @@ import Model.AbstractClasses.Character;
 import Model.AbstractClasses.Guardian;
 import Model.AbstractClasses.Hero;
 import View.GameFrame;
-import View.InventoryPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -75,7 +74,8 @@ public class GameController {
         System.setOut(ps);
 
         myFrame.showMap(myMaze, myHero, travelLog);
-        while (myHero.getPillarCount() != 4) {
+        //Keep playing the game until all pillars are collected and the player returns to entrance
+        while (myHero.getPillarCount() != 4 || myMaze.getHeroLocation()[0]+myMaze.getHeroLocation()[1] != 0) {
             System.setOut(ps);
             do {
                 Thread.sleep(200);
@@ -163,14 +163,14 @@ public class GameController {
         //One of our combatants has suffered their untimely demise :'( tell the user! Give health bonus to hero for overboard damage.
         if (theDefender.getHealth() <= 0) {
             System.out.println(theDefender.getMyName() + " has been Vanquished!");
-            //Make sure defender health is less than 0 or we'll get an error
+            //Make sure defender health is less than 0, or we'll get an error
             if (theDefender.getHealth() < 0)
                 System.out.println("Health Boost for overboard damage: " + myHero.heal((-theDefender.getHealth()), 0));
             myFrame.battlePanel(myHero, theDefender, atkLog);
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } else if (myHero.getHealth() <= 0) {
             myFrame.battlePanel(myHero, theDefender, atkLog);
-            Thread.sleep(3000);
+            Thread.sleep(1000);
             death("You were swallowed by the Forest.., you succumb to the injuries caused by the " + theDefender.getMyName() + "!");
         }
     }
@@ -232,10 +232,10 @@ public class GameController {
                 System.out.print("Health Boost for overboard damage: " + myHero.heal((-theDefender.getHealth()), 0));
             System.out.println("You received The " + theDefender.getPillar() + "!!!");
             myFrame.battlePanel(myHero, theDefender, atkLog);
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } else if (myHero.getHealth() <= 0) {
             myFrame.battlePanel(myHero, theDefender, atkLog);
-            Thread.sleep(3000);
+            Thread.sleep(1000);
             death("You were swallowed by the Forest.., you succumb to the injuries caused by the " + theDefender.getMyName() + "!");
         }
     }
@@ -255,15 +255,18 @@ public class GameController {
     }
 
     private static void win() throws SQLException, IOException, InterruptedException {
-        System.out.println("\nAll four pillars retrieved! Thank you for playing!");
-        System.out.println("Play Again?");
-        System.out.print("y/n: ");
-        Scanner sc = new Scanner(System.in);
-        String input = sc.nextLine();
-        switch (input) {
-            case "y" -> intro();
-            case "n" -> exit();
-            default -> win();
+        myFrame.winPanel();
+        do {
+            Thread.sleep(200);
+        } while (WinInput.input == 0);
+        switch (WinInput.input) {
+            case 1 -> {
+                WinInput.input = 0;
+                myHero.clearPillarCount();
+                myMaze = null;
+                difficultySelect();
+            }
+            case 2 -> exit();
         }
     }
 
@@ -323,21 +326,21 @@ public class GameController {
             switch (name) {
                 case "Bubble Blowin Baby" -> {
                     try {
-                        myMaze = new Maze(4, 1, myHero);
+                        myMaze = new Maze(5, 1, myHero);
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
                 }
                 case "Amateur Explorer" -> {
                     try {
-                        myMaze = new Maze(5, 2, myHero);
+                        myMaze = new Maze(7, 2, myHero);
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
                 }
                 case "Big Kids Table" -> {
                     try {
-                        myMaze = new Maze(7, 3, myHero);
+                        myMaze = new Maze(8, 3, myHero);
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
@@ -372,19 +375,13 @@ public class GameController {
                     myDefender.damage(500);
                     myAttack = true;
                 }
-                case "Inventory" -> {
-                    myInventory = true;
-                }
+                case "Inventory" -> myInventory = true;
             }
 
         }
 
         private static void resetAttack() {
             myAttack = false;
-        }
-
-        private static boolean noAttack() {
-            return !myAttack;
         }
     }
 
@@ -396,13 +393,17 @@ public class GameController {
 
             switch (name) {
                 case "Health" -> {
-                    var potion = new HealthPotion();
-                    potion.useEffect(myHero);
-                    myHero.getInventory().removeItem("Health Potion");
+                    if(myHero.getHealth()!=myHero.getMaxHealth()) {
+                        var potion = new HealthPotion();
+                        System.out.println(potion.useEffect(myHero));
+                        myHero.getInventory().removeItem("Health Potion");
+                    } else{
+                        System.out.println("Hero already at max health.");
+                    }
                 }
                 case "Vision" -> {
                     var potion = new VisionPotion();
-                    potion.useEffect(myMaze);
+                    System.out.println(potion.useEffect(myMaze));
                     myHero.getInventory().removeItem("Vision Potion");
                 }
             }
@@ -434,6 +435,21 @@ public class GameController {
             }
         }
 
+    }
+
+    public static class WinInput implements ActionListener {
+
+        private static int input;
+
+        public void actionPerformed(ActionEvent e) {
+            String name = e.getActionCommand();
+            input = 0;
+
+            switch (name) {
+                case "Keep Playing?" -> input = 1;
+                case "Touch Grass?" -> input = 2;
+            }
+        }
     }
 }
 

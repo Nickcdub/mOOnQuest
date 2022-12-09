@@ -44,8 +44,8 @@ public class Monster extends Character implements Healable{
         //Is this monster lucky enough to heal? if it is, it regenerates health, if not, recover = 0
         int recover = Math.random() <= myHealChance ? myRegeneration : 0;
 
-        //If hitpoints are healed beyond maxHealth, reset back at maxHealth;
-        setMyHitPoints(getHealth() + recover < getMaxHealth() ? getHealth() + recover : getMaxHealth());
+        //If hit points are healed beyond maxHealth, reset back at maxHealth;
+        setMyHitPoints(Math.min(getHealth() + recover, getMaxHealth()));
         return recover == 0 ? getMyName() + " did not regenerate health.\n" : getMyName() + " regenerated " + recover + " health!\n";
     }
 

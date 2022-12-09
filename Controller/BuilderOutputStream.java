@@ -1,7 +1,5 @@
 package Controller;
 
-
-import java.io.IOException;
 import java.io.OutputStream;
 
 public class BuilderOutputStream extends OutputStream {
@@ -12,7 +10,7 @@ public class BuilderOutputStream extends OutputStream {
     }
 
     @Override
-    public void write(int b) throws IOException {
+    public void write(int b) {
     //append characters to builder
     myBuilder.append((char) b);
     }
