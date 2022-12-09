@@ -58,8 +58,13 @@ public abstract class Hero extends SpecialCharacter implements Blockable {
     public Inventory getInventory() {
         return INVENTORY;
     }
+
     public int getPillarCount(){
         return myPillarCount;
+    }
+
+    public void clearPillarCount(){
+        myPillarCount = 0;
     }
 
     public String toString() {

@@ -27,8 +27,8 @@ public class Cerberus extends Guardian implements Blockable {
 
         loadGuardian( rs);
 
-        //Borrow block chance from knight.
-        ResultSet set = statement.executeQuery("SELECT * FROM hero_table WHERE NAME = 'KNIGHT'");
+        //Borrow block chance from mender.
+        ResultSet set = statement.executeQuery("SELECT * FROM hero_table WHERE NAME = 'MENDER'");
         myBlockChance = set.getFloat("BLOCKCHANCE");
 
         connection.close();
