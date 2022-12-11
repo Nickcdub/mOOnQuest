@@ -28,9 +28,9 @@ public class GameController {
     public GameController() throws SQLException, IOException, InterruptedException {
         //Initialize the Gson object
         myGson = new GsonBuilder()
-                .registerTypeAdapter(Hero.class, new HeroAdapter())
-                .registerTypeAdapter(Guardian.class, new GuardianAdapter())
-                .excludeFieldsWithModifiers(java.lang.reflect.Modifier.TRANSIENT)
+                .registerTypeAdapter(Hero.class, new HeroAdapter()) //abstract
+                .registerTypeAdapter(Guardian.class, new GuardianAdapter()) //abstract
+                .excludeFieldsWithModifiers(java.lang.reflect.Modifier.TRANSIENT) //required to handle static variables
                 .create();
         intro();
     }
@@ -131,7 +131,7 @@ public class GameController {
             //Save each time we make a move after we battle the monster
             myMazeWriter = new FileWriter("maze.txt", false);
             myGson.toJson(myMaze, myMazeWriter);
-            myMazeWriter.flush();
+            myMazeWriter.flush(); // ensures that all data is written (and file writer doesn't stop after a few hundred lines)
         }
         win();
     }
@@ -478,6 +478,7 @@ public class GameController {
         }
     }
 
+    // This class was created to handle serialization for the abstract hero and guardian classes (they couldn't be instantiated otherwise)
     class HeroAdapter implements JsonDeserializer<Hero>  {
         @Override
         public Hero deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
