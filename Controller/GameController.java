@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.SQLException;
-import java.util.Scanner;
 
 public class GameController {
 
@@ -36,12 +35,12 @@ public class GameController {
         myFrame.introPanel();
         do {
             Thread.sleep(200);
-        } while (IntroInput.input == 0);
-        if (IntroInput.input == 1) {
-            IntroInput.input = 0;
+        } while (IntroInput.myInput == 0);
+        if (IntroInput.myInput == 1) {
+            IntroInput.myInput = 0;
             characterSelect();
         } else {
-            IntroInput.input = 0;
+            IntroInput.myInput = 0;
             intro();
         }
     }
@@ -276,13 +275,13 @@ public class GameController {
 
     public static class IntroInput implements ActionListener {
 
-        private static int input;
+        private static int myInput;
 
         public void actionPerformed(ActionEvent e) {
             String name = e.getActionCommand();
             switch (name) {
-                case "New Game" -> input = 1;
-                case "Load Save" -> input = 0;
+                case "New Game" -> myInput = 1;
+                case "Load Save" -> myInput = 0;
             }
         }
     }
