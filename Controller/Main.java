@@ -67,9 +67,9 @@ public class Main {
             // handle exception
         }
 
-       //GameController controller = new GameController();
-        GameFrame gui = new GameFrame(1200,1200);
-        gui.winPanel();
+       GameController controller = new GameController();
+        //GameFrame gui = new GameFrame(1200,1200);
+        //gui.winPanel();
 
 
         //GameFrame gui = new GameFrame(800,800);

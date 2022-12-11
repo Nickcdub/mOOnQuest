@@ -10,28 +10,28 @@ import static Model.CharacterConstants.MonsterType.*;
 
 public class Maze {
     //We want grid to be an ArrayList so that we can take advantage of its dynamic methods.
-    private final List<Region> GRID;
+    private  List<Region> GRID;
     //We will keep track of rows and columns for modular use and have breadcrumbs for recursive backtracking.
-    private final int ROWS;
-    private final int COLS;
-    private final Stack<Region> BREAD_CRUMBS;
+    private int ROWS;
+    private int COLS;
+    private Stack<Region> BREAD_CRUMBS;
 
     //We will always know the hero's location and have reference to our hero
-    private final Hero HERO;
-    private final int[] HERO_LOCATION;
+    private static Hero HERO;
+    private int[] HERO_LOCATION;
     //When a monster is in a region, it will have a chance to be 3 different monsters on hard
-    private float myOgreChance;
-    private float myWolfChance;
-    private float myGoblinChance;
+    private static float myOgreChance;
+    private static float myWolfChance;
+    private static float myGoblinChance;
 
     //We need some way of telling the controller that we have to fight something after move() and Region's loot()
-    private Monster myEnemy;
-    private Guardian myBoss;
+    private static Monster myEnemy;
+    private static Guardian myBoss;
 
     //We need to generate guardians and were going to use the maze generator to help us.
     //We need a data structure to hold our guardian bosses and an int to maintain our place within the data structure.
-    private final List<Guardian> BOSS_LIST;
-    private int myPlaceHolder;
+    private static List<Guardian> BOSS_LIST;
+    private static int myPlaceHolder;
 
 
     //The constructor will:

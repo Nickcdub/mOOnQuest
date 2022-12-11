@@ -5,12 +5,13 @@ import Model.AbstractClasses.Character;
 import Model.AbstractClasses.Guardian;
 import Model.AbstractClasses.Hero;
 import View.GameFrame;
+import com.google.gson.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -19,9 +20,18 @@ public class GameController {
     private static Hero myHero;
     private static Maze myMaze;
     private static GameFrame myFrame;
+    private static Gson myGson;
+    private static FileWriter myMazeWriter;
+    private static FileReader myMazeReader;
 
 
     public GameController() throws SQLException, IOException, InterruptedException {
+        //Initialize the Gson object
+        myGson = new GsonBuilder()
+                .registerTypeAdapter(Hero.class, new HeroAdapter())
+                .registerTypeAdapter(Guardian.class, new GuardianAdapter())
+                .excludeFieldsWithModifiers(java.lang.reflect.Modifier.TRANSIENT)
+                .create();
         intro();
     }
 
@@ -40,6 +50,15 @@ public class GameController {
         if (IntroInput.input == 1) {
             IntroInput.input = 0;
             characterSelect();
+        } else if (IntroInput.input == 2) {
+            myMazeReader = new FileReader("maze.txt");
+            try {
+                myMaze = myGson.fromJson(myMazeReader, Maze.class);
+            }
+            catch(Exception e) {
+                System.out.println(e);
+            }
+            traverse();
         } else {
             IntroInput.input = 0;
             intro();
@@ -108,6 +127,11 @@ public class GameController {
             }
             myFrame.showMap(myMaze, myHero, travelLog);
 
+            //Initialize the FileWriter here because setting the false flag will clear the file
+            //Save each time we make a move after we battle the monster
+            myMazeWriter = new FileWriter("maze.txt", false);
+            myGson.toJson(myMaze, myMazeWriter);
+            myMazeWriter.flush();
         }
         win();
     }
@@ -270,7 +294,9 @@ public class GameController {
         }
     }
 
-    private static void exit() {
+    private static void exit() throws IOException {
+        myMazeReader.close();
+        myMazeWriter.close();
         System.exit(0);
     }
 
@@ -282,7 +308,7 @@ public class GameController {
             String name = e.getActionCommand();
             switch (name) {
                 case "New Game" -> input = 1;
-                case "Load Save" -> input = 0;
+                case "Load Save" -> input = 2;
             }
         }
     }
@@ -448,6 +474,55 @@ public class GameController {
             switch (name) {
                 case "Keep Playing?" -> input = 1;
                 case "Touch Grass?" -> input = 2;
+            }
+        }
+    }
+
+    class HeroAdapter implements JsonDeserializer<Hero>  {
+        @Override
+        public Hero deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            try {
+                String contents = jsonElement.toString();
+                if (contents.contains("KNIGHT")) {
+                    myHero = myGson.fromJson(contents, Knight.class);
+                }
+                if (contents.contains("MENDER")) {
+                    myHero = myGson.fromJson(contents, Mender.class);
+                }
+                if (contents.contains("ASSASSIN")) {
+                    myHero = myGson.fromJson(contents, Assassin.class);
+                }
+                return myHero;
+            }
+            catch(Exception e) {
+                System.out.println(e);
+                return null;
+            }
+        }
+    }
+
+    class GuardianAdapter implements JsonDeserializer<Guardian>  {
+        @Override
+        public Guardian deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            try {
+                String contents = jsonElement.toString();
+                if (contents.contains("CERBERUS")) {
+                    return new Cerberus();
+                }
+                if (contents.contains("RED_DRAGON")) {
+                    return new RedDragon();
+                }
+                if (contents.contains("HYDRA")) {
+                    return new Hydra();
+                }
+                if (contents.contains("TOM")) {
+                    return new Tom();
+                }
+                return null;
+            }
+            catch(Exception e) {
+                System.out.println(e);
+                return null;
             }
         }
     }
