@@ -10,28 +10,28 @@ import static Model.CharacterConstants.MonsterType.*;
 
 public class Maze {
     //We want grid to be an ArrayList so that we can take advantage of its dynamic methods.
-    private final List<Region> GRID;
+    private List<Region> myGrid;
     //We will keep track of rows and columns for modular use and have breadcrumbs for recursive backtracking.
-    private final int ROWS;
-    private final int COLS;
-    private final Stack<Region> BREAD_CRUMBS;
+    private int myRows;
+    private int myCols;
+    private Stack<Region> myBreadCrumbs;
 
     //We will always know the hero's location and have reference to our hero
-    private final Hero HERO;
-    private final int[] HERO_LOCATION;
+    private static Hero myHero;
+    private static int[] myLocation;
     //When a monster is in a region, it will have a chance to be 3 different monsters on hard
-    private float myOgreChance;
-    private float myWolfChance;
-    private float myGoblinChance;
+    private static float myOgreChance;
+    private static float myWolfChance;
+    private static float myGoblinChance;
 
     //We need some way of telling the controller that we have to fight something after move() and Region's loot()
-    private Monster myEnemy;
-    private Guardian myBoss;
+    private static Monster myEnemy;
+    private static Guardian myBoss;
 
     //We need to generate guardians and were going to use the maze generator to help us.
     //We need a data structure to hold our guardian bosses and an int to maintain our place within the data structure.
-    private final List<Guardian> BOSS_LIST;
-    private int myPlaceHolder;
+    private static List<Guardian> myBossList;
+    private static int myPlaceHolder;
 
 
     //The constructor will:
@@ -42,23 +42,23 @@ public class Maze {
 
 
     public Maze(final int theSize, final int theDifficulty, Hero theHero) throws SQLException {
-        GRID = new ArrayList<>();
+        myGrid = new ArrayList<>();
 
-        ROWS = theSize;
-        COLS = theSize;
-        BREAD_CRUMBS = new Stack<>();
+        myRows = theSize;
+        myCols = theSize;
+        myBreadCrumbs = new Stack<>();
 
-        HERO = theHero;
-        HERO_LOCATION = new int[]{0,0};
+        myHero = theHero;
+        myLocation = new int[]{0,0};
 
         myEnemy = null;
         myBoss = null;
 
-        BOSS_LIST = new ArrayList<>();
-        BOSS_LIST.add(new Cerberus());
-        BOSS_LIST.add(new Hydra());
-        BOSS_LIST.add(new RedDragon());
-        BOSS_LIST.add(new Tom());
+        myBossList = new ArrayList<>();
+        myBossList.add(new Cerberus());
+        myBossList.add(new Hydra());
+        myBossList.add(new RedDragon());
+        myBossList.add(new Tom());
         myPlaceHolder = 0;
 
         String jdbcURL = "jdbc:sqlite:DungeonAdventure.sqlite";
@@ -77,7 +77,7 @@ public class Maze {
         connection.close();
 
         //Initialize regions and clear 0,0 (It will be our entrance)
-        initializeGrid(GRID);
+        initializeGrid(myGrid);
         getRegion(0,0).clearRoom();
         getRegion(0,0).myVisible = true;
 
@@ -93,8 +93,8 @@ public class Maze {
 
     //This method will fill the myGrid with default regions
     private void initializeGrid(List<Region> theGrid) {
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
+        for (int i = 0; i < myRows; i++) {
+            for (int j = 0; j < myCols; j++) {
                 theGrid.add(new Region(i, j));
             }
         }
@@ -123,17 +123,17 @@ public class Maze {
     //This private method will be used by randomNeighbor within Region in order to find index regions within grid
     private int index(final int theRowIndex, final int theColumnIndex) {
         //This will let the randomNeighbor method know if the desired index is out of bounds for the grid
-        if (theRowIndex < 0 || theColumnIndex < 0 || theRowIndex > ROWS - 1 || theColumnIndex > COLS - 1) return -1;
+        if (theRowIndex < 0 || theColumnIndex < 0 || theRowIndex > myRows - 1 || theColumnIndex > myCols - 1) return -1;
         //This method returns the algorithm column + (row * #of columns in a row)
         //Example: if we are in column 3 in row 1 of base 10 (#13), 13 = 3 + (1 * 10)
-        return theColumnIndex + theRowIndex * COLS;
+        return theColumnIndex + theRowIndex * myCols;
     }
 
     //This method will march through our region walls to carve a maze and plop bosses when not backtracking
     private void generateMaze() {
         //Keep track of current and next region in the march, mark current as visited
         //Keep track of region that gets blocked so that we can save the final region in the generation.
-        Region current = GRID.get(0);
+        Region current = myGrid.get(0);
         Region next = current.randomNeighbor();
         Region blocked = null;
 
@@ -149,7 +149,7 @@ public class Maze {
         //This loop will also place a boss when bossMarcher == Math.floor(myRows*myCols/4), the final boss will be placed at the end.
         while (next != null) {
             next.myVisited = true;
-            BREAD_CRUMBS.push(current);
+            myBreadCrumbs.push(current);
             removeWalls(current, next);
             current = next;
             next = current.randomNeighbor();
@@ -157,7 +157,7 @@ public class Maze {
             //Progress bossMarcher as we've entered a new room, check if we can put a guardian!
             //If we can, we should clear the room, so we don't encounter monsters or items and add a guardian.
             bossMarcher++;
-            if(bossMarcher==Math.floor(ROWS * COLS /4) && bossCount<3){
+            if(bossMarcher==Math.floor(myRows * myCols /4) && bossCount<3){
                 bossCount++;
                 current.clearRoom();
                 current.myGuardian = true;
@@ -167,8 +167,8 @@ public class Maze {
             //Oh no! we've hit a block, just backtrack to a time when we had neighbors
             //If we end up back at the beginning, then our maze is complete and the loop can end
             blocked = current;
-            while (next == null && BREAD_CRUMBS.size() != 0) {
-                current = BREAD_CRUMBS.pop();
+            while (next == null && myBreadCrumbs.size() != 0) {
+                current = myBreadCrumbs.pop();
                 next = current.randomNeighbor();
             }
 
@@ -179,7 +179,7 @@ public class Maze {
         blocked.myGuardian = true;
     }
     public String getPath(){
-        boolean[] walls = getRegion(HERO_LOCATION[0], HERO_LOCATION[1]).WALLS;
+        boolean[] walls = getRegion(myLocation[0], myLocation[1]).WALLS;
         StringBuilder st = new StringBuilder();
         //Is West Possible?
         if(!walls[0]) st.append(" WEST ");
@@ -195,25 +195,25 @@ public class Maze {
 
         switch (theDirection){
             case "EAST" ->{
-                if(index(HERO_LOCATION[0], HERO_LOCATION[1]+1)==-1) throw new IndexOutOfBoundsException("Controller should not read in EAST if EAST is not an option, Location: "+(HERO_LOCATION[0])+","+(HERO_LOCATION[1]+1));
-                HERO_LOCATION[1]++;
+                if(index(myLocation[0], myLocation[1]+1)==-1) throw new IndexOutOfBoundsException("Controller should not read in EAST if EAST is not an option, Location: "+(myLocation[0])+","+(myLocation[1]+1));
+                myLocation[1]++;
             }
             case "WEST" ->{
-                if(index(HERO_LOCATION[0], HERO_LOCATION[1]-1)==-1) throw new IndexOutOfBoundsException("Controller should not read in WEST if WEST is not an option, Location: "+ HERO_LOCATION[0]+","+(HERO_LOCATION[1]-1));
-                HERO_LOCATION[1]--;
+                if(index(myLocation[0], myLocation[1]-1)==-1) throw new IndexOutOfBoundsException("Controller should not read in WEST if WEST is not an option, Location: "+ myLocation[0]+","+(myLocation[1]-1));
+                myLocation[1]--;
             }
             case "NORTH" ->{
-                if(index(HERO_LOCATION[0]-1, HERO_LOCATION[1])==-1) throw new IndexOutOfBoundsException("Controller should not read in NORTH if NORTH is not an option, Location: "+(HERO_LOCATION[0]-1)+","+ HERO_LOCATION[1]);
-                HERO_LOCATION[0]--;
+                if(index(myLocation[0]-1, myLocation[1])==-1) throw new IndexOutOfBoundsException("Controller should not read in NORTH if NORTH is not an option, Location: "+(myLocation[0]-1)+","+ myLocation[1]);
+                myLocation[0]--;
             }
             case "SOUTH" ->{
-                if(index(HERO_LOCATION[0]+1, HERO_LOCATION[1])==-1) throw new IndexOutOfBoundsException("Controller should not read in SOUTH if SOUTH is not an option, Location: "+(HERO_LOCATION[0]+1)+","+ HERO_LOCATION[1]);
-                HERO_LOCATION[0]++;
+                if(index(myLocation[0]+1, myLocation[1])==-1) throw new IndexOutOfBoundsException("Controller should not read in SOUTH if SOUTH is not an option, Location: "+(myLocation[0]+1)+","+ myLocation[1]);
+                myLocation[0]++;
             }
             default ->throw new IllegalArgumentException("There are 4 possible Directions: NORTH, SOUTH, EAST, WEST. Input: "+theDirection);
         }
-        newRoom = getRegion(HERO_LOCATION[0], HERO_LOCATION[1]);
-        getRegion(HERO_LOCATION[0], HERO_LOCATION[1]).myVisible = true;
+        newRoom = getRegion(myLocation[0], myLocation[1]);
+        getRegion(myLocation[0], myLocation[1]).myVisible = true;
         if(!newRoom.hasLoot()) {
             myEnemy = null;
             myBoss = null;
@@ -228,7 +228,7 @@ public class Maze {
      */
 
     private Region getRegion(final int theRow, final int theColumn) {
-        return GRID.get(index(theRow, theColumn));
+        return myGrid.get(index(theRow, theColumn));
     }
 
     public boolean[] getRegionWalls(final int theRow, final int theCol) {
@@ -251,15 +251,15 @@ public class Maze {
     }
 
     public int getRows() {
-        return ROWS;
+        return myRows;
     }
 
     public int getColumns() {
-        return COLS;
+        return myCols;
     }
 
     public int[] getHeroLocation(){
-        return HERO_LOCATION;
+        return myLocation;
     }
 
     public Monster getEnemy() {
@@ -354,19 +354,19 @@ public class Maze {
 
             if(myGuardian){
                 myGuardian = false;
-                myBoss = BOSS_LIST.get(myPlaceHolder);
+                myBoss = myBossList.get(myPlaceHolder);
                 myPlaceHolder++;
             }
 
             if(myPotion) {
-                HERO.getInventory().addItem(Math.random() < 0.85 ? new HealthPotion() : new VisionPotion());
+                myHero.getInventory().addItem(Math.random() < 0.85 ? new HealthPotion() : new VisionPotion());
                 myPotion = false;
             }
 
             if(myTrap){
-                HERO.trap(20);
+                myHero.trap(20);
                 myTrap = false;
-                if(HERO.getHealth()<0) return;
+                if(myHero.getHealth()<0) return;
             }
 
             if(myMonster){
@@ -385,20 +385,20 @@ public class Maze {
             //Use index method in Model.Maze to locate adjacent regions
 
             //Each if statement will check if the index exists && whether it has already been visited or not.
-            if (index(ROW, COL - 1) != -1 && !GRID.get(index(ROW, COL - 1)).myVisited) {//Check left neighbor
-                Region left = GRID.get(index(ROW, COL - 1));
+            if (index(ROW, COL - 1) != -1 && !myGrid.get(index(ROW, COL - 1)).myVisited) {//Check left neighbor
+                Region left = myGrid.get(index(ROW, COL - 1));
                 neighbors.add(left);
             }
-            if (index(ROW, COL + 1) != -1 && !GRID.get(index(ROW, COL + 1)).myVisited) {//Check right neighbor
-                Region right = GRID.get(index(ROW, COL + 1));
+            if (index(ROW, COL + 1) != -1 && !myGrid.get(index(ROW, COL + 1)).myVisited) {//Check right neighbor
+                Region right = myGrid.get(index(ROW, COL + 1));
                 neighbors.add(right);
             }
-            if (index(ROW - 1, COL) != -1 && !GRID.get(index(ROW - 1, COL)).myVisited) {//Check neighbor above
-                Region top = GRID.get(index(ROW - 1, COL));
+            if (index(ROW - 1, COL) != -1 && !myGrid.get(index(ROW - 1, COL)).myVisited) {//Check neighbor above
+                Region top = myGrid.get(index(ROW - 1, COL));
                 neighbors.add(top);
             }
-            if (index(ROW + 1, COL) != -1 && !GRID.get(index(ROW + 1, COL)).myVisited) {//Check neighbor below
-                Region bottom = GRID.get(index(ROW + 1, COL));
+            if (index(ROW + 1, COL) != -1 && !myGrid.get(index(ROW + 1, COL)).myVisited) {//Check neighbor below
+                Region bottom = myGrid.get(index(ROW + 1, COL));
                 neighbors.add(bottom);
             }
             if (neighbors.size() == 0) {//If none of the neighbors are suitable, return null to tell generate that we've hit a block
