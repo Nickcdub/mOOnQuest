@@ -31,12 +31,14 @@ public class MapPanel extends JPanel {
         //right side panel
         JPanel sidePanel = new JPanel();
         JPanel movePanel = new JPanel();
+        JPanel options = new JPanel();
         JTextArea txt = new JTextArea();
         JScrollPane log = new JScrollPane(txt);
 
         //Set grid layout for our maze grid, borderLayout for our sidePanel
         mazePanel.setLayout(new GridLayout(theMaze.getRows() + 1, theMaze.getColumns() + 1));
-        sidePanel.setLayout(new GridLayout(2,1));
+        sidePanel.setLayout(new GridLayout(3,1));
+        options.setLayout(new GridLayout(1,2));
 
         //SubPanels of sidePanel
 
@@ -54,12 +56,31 @@ public class MapPanel extends JPanel {
         JButton east = new JButton("East");
         JButton south = new JButton("South");
 
+        JButton save = new JButton(new ImageIcon(ImageIO.read(new File("save.png"))));
+        JButton help = new JButton(new ImageIcon(ImageIO.read(new File("help.png"))));
+
+        //These are so that the names can be identified by the listener.
+        north.setName("North");
+        west.setName("West");
+        inventory.setName("Inventory");
+        east.setName("East");
+        south.setName("South");
+        save.setName("Save");
+        help.setName("Help");
+
+        save.setBorder(BorderFactory.createEmptyBorder());
+        help.setBorder(BorderFactory.createEmptyBorder());
+        save.setContentAreaFilled(false);
+        help.setContentAreaFilled(false);
+
         north.addActionListener(new GameController.MoveInput());
         west.addActionListener(new GameController.MoveInput());
         inventory.addActionListener(new GameController.MoveInput());
         east.addActionListener(new GameController.MoveInput());
         south.addActionListener(new GameController.MoveInput());
 
+        save.addActionListener(new GameController.MoveInput());
+        help.addActionListener(new GameController.MoveInput());
         //Only display these buttons if they are paths that are possible
         if(!MAZE.getPath().contains("NORTH")) {
             north.setEnabled(false);
@@ -90,6 +111,11 @@ public class MapPanel extends JPanel {
         movePanel.add(east ,BorderLayout.EAST);
         movePanel.add(south ,BorderLayout.SOUTH);
 
+        options.add(save);
+        options.add(help);
+        options.setBackground(Color.darkGray);
+
+        sidePanel.add(options);
         sidePanel.add(movePanel);
         sidePanel.add(log);
 
@@ -100,12 +126,11 @@ public class MapPanel extends JPanel {
             }
         }
 
+        //sidePanel.setPreferredSize(new Dimension(thePanelSize, thePanelSize));
+        setPreferredSize(new Dimension(thePanelSize, thePanelSize));
 
         add(mazePanel,BorderLayout.CENTER);
         add(sidePanel,BorderLayout.EAST);
-
-        sidePanel.setPreferredSize(new Dimension(thePanelSize, thePanelSize));
-        setPreferredSize(new Dimension(thePanelSize, thePanelSize));
     }
 
     class RegionPanel extends JPanel {
@@ -122,31 +147,34 @@ public class MapPanel extends JPanel {
             int right = sizeFacter * (walls[1] ? 1 : 0);
             setBorder(BorderFactory.createMatteBorder(top, left, bottom, right, Color.BLACK));
             //If region is not visible, don't show it
-            if(!theMaze.getRegionVisibility(theRow,theCol)) {
+            if (!theMaze.getRegionVisibility(theRow, theCol)) {
                 setVisible(false);
                 setOpaque(false);
-            } else setBackground(Color.decode("#F3EAD3"));
+            } else {
+                setBackground(Color.decode("#F3EAD3"));
 
-            //If both the row and the column are 0, its the entrance, make it green
-            if(theRow+theCol == 0) {
-                setBackground(Color.decode("#A1E48F"));
-                add(new JLabel("<<ENTRANCE<<"));
+                //If both the row and the column are 0, its the entrance, make it green
+                if (theRow + theCol == 0) {
+                    setBackground(Color.decode("#A1E48F"));
+                    add(new JLabel("<<ENTRANCE<<"));
+                }
+
+                //If the hero is on this space, set background to blue and add the hero's image
+                if (theMaze.getHeroLocation()[0] == theRow && theMaze.getHeroLocation()[1] == theCol) {
+                    setBackground(Color.decode("#016064"));
+                    BufferedImage myPicture = ImageIO.read(new File(HERO.getMyName() + ".png"));
+                    Image img = myPicture.getScaledInstance(PANEL_SIZE / MAZE.getColumns(), PANEL_SIZE / MAZE.getRows() + 30, 0);
+
+                    JLabel picLabel = new JLabel(new ImageIcon(img));
+                    //picLabel.setPreferredSize(new Dimension(PANEL_SIZE/MAZE.getColumns(),PANEL_SIZE/MAZE.getRows()));
+                    add(picLabel);
+                }
+                //If guardian: make space purple, else if monster/hazard: make red, else if potion: gold
+                if (theMaze.getRegionGuardian(theRow, theCol)) setBackground(Color.decode("#81007F"));
+                else if (theMaze.getRegionMonster(theRow, theCol) || theMaze.getRegionTrap(theRow, theCol))
+                    setBackground(Color.decode("#DC143C"));
+                else if (theMaze.getRegionPotion(theRow, theCol)) setBackground(Color.decode("#d4af37"));
             }
-
-            //If the hero is on this space, set background to blue and add the hero's image
-            if(theMaze.getHeroLocation()[0] == theRow && theMaze.getHeroLocation()[1] == theCol) {
-                setBackground(Color.decode("#016064"));
-                BufferedImage myPicture = ImageIO.read(new File(HERO.getMyName()+".png"));
-                Image img =myPicture.getScaledInstance(PANEL_SIZE/MAZE.getColumns(),PANEL_SIZE/MAZE.getRows()+30,0);
-
-                JLabel picLabel = new JLabel(new ImageIcon(img));
-                //picLabel.setPreferredSize(new Dimension(PANEL_SIZE/MAZE.getColumns(),PANEL_SIZE/MAZE.getRows()));
-                add(picLabel);
-            }
-            //If guardian: make space purple, else if monster/hazard: make red, else if potion: gold
-            if(theMaze.getRegionGuardian(theRow,theCol)) setBackground(Color.decode("#81007F"));
-            else if(theMaze.getRegionMonster(theRow,theCol) || theMaze.getRegionTrap(theRow,theCol)) setBackground(Color.decode("#DC143C"));
-            else if(theMaze.getRegionPotion(theRow,theCol)) setBackground(Color.decode("#d4af37"));
         }
     }
 }

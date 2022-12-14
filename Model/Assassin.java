@@ -36,8 +36,8 @@ public class Assassin extends Hero {
        int hitCount = 0;
        String result;
 
-       if(Math.random()> getMyUltChance()) hitCount++;
-        if(Math.random()> getMyUltChance()) hitCount++;
+       if(Math.random()< getMyUltChance()) hitCount++;
+        if(Math.random()< getMyUltChance()) hitCount++;
 
         Random r = new Random();
 

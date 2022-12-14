@@ -30,7 +30,7 @@ public class BattlePanel extends JPanel {
         var attack = new JButton("Attack");
         var special = new JButton("Special");
         var inventory = new JButton("Inventory");
-        var cheats = new JButton("Cheats");
+        var cheats = new JButton("God Mode");
 
         //add action listener
         attack.addActionListener(new GameController.BattleInput(theDefender.getCharacter()));

@@ -32,8 +32,8 @@ public class Inventory {
         return size;
     }
 
-    public int getItem(final String item){
-        return INVENTORY.get(item);
+    public int getItem(final String theItem){
+        return INVENTORY.get(theItem);
     }
 
     @Override

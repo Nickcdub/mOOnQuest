@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.Random;
 
 public abstract class Character{
+   //Necessary info for the 
     private String myName;
-    //Hp: health, speed: attack turn, hit chance: possibility of attack landing, min/maxDMG: range of damage from successful attack
     private int myHitPoints;
     private int myMaxHealth;
     private float myAttackSpeed;
@@ -25,6 +25,7 @@ public abstract class Character{
         myMinDmg = 0;
         myMaxDmg = 0;
     }
+    //Character concrete classes will reach up the inheritance hierarchy in order to load data from the database
     protected void loadCharacter(ResultSet theRS) throws SQLException {
         myName = theRS.getString("NAME");
         myHitPoints = myMaxHealth = theRS.getInt("HP");
@@ -52,6 +53,7 @@ public abstract class Character{
 
     public abstract String damage(final int theDamage);
 
+    //We need these getters to perform operations in the controller
     public String getMyName(){
         return myName;
     }
@@ -80,8 +82,22 @@ public abstract class Character{
         return myMaxDmg;
     }
 
-    protected void setMyHitPoints(int myHitPoints) {
-        this.myHitPoints = myHitPoints;
+
+    //We need these setters for inheriting classes to reset character info
+    protected void setMyDmg(final int theMaxDmg,final int theMinDmg){
+        myMaxDmg = theMaxDmg;
+        myMinDmg = theMinDmg;
     }
 
+    protected void setMyHitPoints(final int theHitPoints) {
+        this.myHitPoints = theHitPoints;
+    }
+
+    protected void setMyMaxHealth(final int theMax){
+        myMaxHealth = theMax;
+    }
+
+    protected void setMyHitChance(final float theChance){
+        myHitChance = theChance;
+    }
 }

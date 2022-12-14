@@ -5,12 +5,13 @@ import Model.AbstractClasses.Character;
 import Model.AbstractClasses.Guardian;
 import Model.AbstractClasses.Hero;
 import View.GameFrame;
+import com.google.gson.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 
 public class GameController {
@@ -18,9 +19,18 @@ public class GameController {
     private static Hero myHero;
     private static Maze myMaze;
     private static GameFrame myFrame;
+    private static Gson myGson;
+    private static FileWriter myMazeWriter;
+    private static FileReader myMazeReader;
 
 
     public GameController() throws SQLException, IOException, InterruptedException {
+        //Initialize the Gson object
+        myGson = new GsonBuilder()
+                .registerTypeAdapter(Hero.class, new HeroAdapter()) //abstract
+                .registerTypeAdapter(Guardian.class, new GuardianAdapter()) //abstract
+                .excludeFieldsWithModifiers(java.lang.reflect.Modifier.TRANSIENT) //required to handle static variables
+                .create();
         intro();
     }
 
@@ -39,9 +49,36 @@ public class GameController {
         if (IntroInput.myInput == 1) {
             IntroInput.myInput = 0;
             characterSelect();
+        } else if (IntroInput.myInput == 2) {
+            IntroInput.myInput = 0;
+            load();
+            traverse();
         } else {
             IntroInput.myInput = 0;
+            help();
             intro();
+        }
+    }
+
+    private static void load() throws IOException, InterruptedException, SQLException {
+        myFrame.savePanel();
+        do {
+            Thread.sleep(200);
+        } while (SaveInput.myInput == 0);
+        //Check to make sure file has a save, if not, just go to characterselect()
+        File check = new File("maze" + SaveInput.myInput + ".txt");
+        if(check.length() == 0) {
+            SaveInput.myInput = 0;
+            characterSelect();
+        }
+        else {
+            try {
+                myMazeReader = new FileReader("maze" + SaveInput.myInput + ".txt");
+                SaveInput.myInput = 0;
+                myMaze = myGson.fromJson(myMazeReader, Maze.class);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
         }
     }
 
@@ -74,7 +111,7 @@ public class GameController {
 
         myFrame.showMap(myMaze, myHero, travelLog);
         //Keep playing the game until all pillars are collected and the player returns to entrance
-        while (myHero.getPillarCount() != 4 || myMaze.getHeroLocation()[0]+myMaze.getHeroLocation()[1] != 0) {
+        while (myHero.getPillarCount() != 4 || myMaze.getHeroLocation()[0] + myMaze.getHeroLocation()[1] != 0) {
             System.setOut(ps);
             do {
                 Thread.sleep(200);
@@ -87,17 +124,19 @@ public class GameController {
                 case "Inventory" -> {
                     myFrame.inventoryPanel(myHero);
                     do {
-                            Thread.sleep(200);
+                        Thread.sleep(200);
                     } while (!InventoryInput.input);
                     InventoryInput.input = false;
                 }
+                case "Save" -> save();
+                case "Help" -> help();
             }
             MoveInput.myMove = null;
             myFrame.showMap(myMaze, myHero, travelLog);
 
-            if (myHero.getHealth() <= 0)
+            if (myHero.getHealth() <= 0) {
                 death("You hit a trap and lacked the energy to escape, you fell unconscious...");
-            if (myMaze.getEnemy() != null) {
+            }else if (myMaze.getEnemy() != null) {
                 System.out.println("Defeated a " + myMaze.getEnemy().getMyName());
                 battle(myMaze.popEnemy());
             } else if (myMaze.getBoss() != null) {
@@ -106,9 +145,30 @@ public class GameController {
                 myHero.addPillar();
             }
             myFrame.showMap(myMaze, myHero, travelLog);
-
         }
         win();
+    }
+
+    private static void save() throws IOException, InterruptedException {
+        myFrame.savePanel();
+        do {
+            Thread.sleep(200);
+        } while (SaveInput.myInput == 0);
+        if(SaveInput.myInput < 4) {
+            myMazeWriter = new FileWriter("maze" + SaveInput.myInput + ".txt", false);
+            //Initialize the FileWriter here because setting the false flag will clear the file
+            myGson.toJson(myMaze, myMazeWriter);
+            myMazeWriter.flush();
+        }
+        SaveInput.myInput = 0;
+    }
+
+    private static void help() throws InterruptedException {
+        myFrame.helpPanel();
+        do {
+            Thread.sleep(200);
+        } while (HelpInput.myInput == 0);
+        HelpInput.myInput = 0;
     }
 
     //Character can not pass data using its getters, so we need to overload battle for Monsters and Guardians.
@@ -138,7 +198,7 @@ public class GameController {
                 } while (!BattleInput.myAttack && !BattleInput.myInventory);
                 BattleInput.myAttack = false;
                 //An attack was not made, inventory is now open, roll back heroTurns counter.
-                if(BattleInput.myInventory){
+                if (BattleInput.myInventory) {
                     i--;
                     BattleInput.myInventory = false;
                     myFrame.inventoryPanel(myHero);
@@ -198,12 +258,12 @@ public class GameController {
                 System.out.println(myHero.getMyName() + "'s Turn!");
                 if (theDefender.getHealth() <= 0) System.out.println("Keep attacking for a chance at gaining health!");
                 myFrame.battlePanel(myHero, theDefender, atkLog);
-                do{
+                do {
                     Thread.sleep(200);
                 } while (!BattleInput.myAttack && !BattleInput.myInventory);
                 BattleInput.myAttack = false;
-               //An attack was not made, inventory is now open, roll back heroTurns counter.
-                if(BattleInput.myInventory){
+                //An attack was not made, inventory is now open, roll back heroTurns counter.
+                if (BattleInput.myInventory) {
                     i--;
                     BattleInput.myInventory = false;
                     myFrame.inventoryPanel(myHero);
@@ -269,7 +329,10 @@ public class GameController {
         }
     }
 
-    private static void exit() {
+    private static void exit() throws IOException {
+        //Prevent null pointers
+        if(myMazeReader!=null)myMazeReader.close();
+       if(myMazeWriter!=null) myMazeWriter.close();
         System.exit(0);
     }
 
@@ -281,8 +344,31 @@ public class GameController {
             String name = e.getActionCommand();
             switch (name) {
                 case "New Game" -> myInput = 1;
-                case "Load Save" -> myInput = 0;
+                case "Load Save" -> myInput = 2;
+                case "Help" -> myInput = 3;
             }
+        }
+    }
+
+    public static class SaveInput implements ActionListener {
+
+        private static int myInput;
+
+        public void actionPerformed(ActionEvent e) {
+            String name = e.getActionCommand();
+            switch (name) {
+                case "Save 1" -> myInput = 1;
+                case "Save 2" -> myInput = 2;
+                case "Save 3" -> myInput = 3;
+                case "Back" -> myInput = 4;
+            }
+        }
+    }
+
+    public static class HelpInput implements  ActionListener {
+        private static int myInput;
+        public void actionPerformed(ActionEvent e){
+            myInput = 1;
         }
     }
 
@@ -369,9 +455,9 @@ public class GameController {
                     System.out.println(myHero.ultimate(myDefender));
                     myAttack = true;
                 }
-                case "Cheats" -> {
-                    System.out.println("Combat Skip!\n");
-                    myDefender.damage(500);
+                case "God Mode" -> {
+                    System.out.println("God Mode Activated!");
+                    myHero.setGod();
                     myAttack = true;
                 }
                 case "Inventory" -> myInventory = true;
@@ -392,11 +478,11 @@ public class GameController {
 
             switch (name) {
                 case "Health" -> {
-                    if(myHero.getHealth()!=myHero.getMaxHealth()) {
+                    if (myHero.getHealth() != myHero.getMaxHealth()) {
                         var potion = new HealthPotion();
                         System.out.println(potion.useEffect(myHero));
                         myHero.getInventory().removeItem("Health Potion");
-                    } else{
+                    } else {
                         System.out.println("Hero already at max health.");
                     }
                 }
@@ -415,8 +501,8 @@ public class GameController {
         private static String myMove;
 
         public void actionPerformed(ActionEvent e) {
-            myMove = e.getActionCommand();
-
+            //myMove = e.getActionCommand();
+            myMove = ((JButton) e.getSource()).getName();
         }
     }
 
@@ -447,6 +533,54 @@ public class GameController {
             switch (name) {
                 case "Keep Playing?" -> input = 1;
                 case "Touch Grass?" -> input = 2;
+            }
+        }
+    }
+
+    // This class was created to handle serialization for the abstract hero and guardian classes (they couldn't be instantiated otherwise)
+    class HeroAdapter implements JsonDeserializer<Hero> {
+        @Override
+        public Hero deserialize(final JsonElement theJsonElement, final Type theType, final JsonDeserializationContext theJsonDeserializationContext) throws JsonParseException {
+            try {
+                String contents = theJsonElement.toString();
+                if (contents.contains("KNIGHT")) {
+                    myHero = myGson.fromJson(contents, Knight.class);
+                }
+                if (contents.contains("MENDER")) {
+                    myHero = myGson.fromJson(contents, Mender.class);
+                }
+                if (contents.contains("ASSASSIN")) {
+                    myHero = myGson.fromJson(contents, Assassin.class);
+                }
+                return myHero;
+            } catch (Exception e) {
+                System.out.println(e);
+                return null;
+            }
+        }
+    }
+
+    class GuardianAdapter implements JsonDeserializer<Guardian> {
+        @Override
+        public Guardian deserialize(final JsonElement theJsonElement, final Type theType, final JsonDeserializationContext theJsonDeserializationContext) throws JsonParseException {
+            try {
+                String contents = theJsonElement.toString();
+                if (contents.contains("CERBERUS")) {
+                    return new Cerberus();
+                }
+                if (contents.contains("RED_DRAGON")) {
+                    return new RedDragon();
+                }
+                if (contents.contains("HYDRA")) {
+                    return new Hydra();
+                }
+                if (contents.contains("TOM")) {
+                    return new Tom();
+                }
+                return null;
+            } catch (Exception e) {
+                System.out.println(e);
+                return null;
             }
         }
     }

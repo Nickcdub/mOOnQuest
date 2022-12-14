@@ -22,4 +22,8 @@ public abstract class SpecialCharacter extends Character {
     protected float getMyUltChance() {
         return myUltChance;
     }
+
+    protected void setMyUltChance(final float theChance){
+        myUltChance = theChance;
+    }
 }

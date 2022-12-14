@@ -25,24 +25,31 @@ public class IntroPanel extends JPanel {
 
         JButton start = new JButton("New Game");
         JButton load = new JButton("Load Save");
+        JButton help = new JButton("Help");
 
         start.addActionListener(new GameController.IntroInput());
         load.addActionListener(new GameController.IntroInput());
+        help.addActionListener(new GameController.IntroInput());
 
         //This says that the distance between this button and anything else should be 10 pixels of space
         c.insets = new Insets(30,300,30,300);
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.ipady = 60;      //make this component tall
+        c.ipady = 80;      //make this component tall
         c.weightx = 0.1;
         c.gridwidth = 1;
         c.gridx = 0;
         c.gridy = 1;
         buttons.add(start,c);
         c.gridx = 0;
-        c.gridwidth = 3;
+        c.gridwidth = 2;
         c.gridy = 2;
-        c.gridheight = 2;
+        c.gridheight = 1;
         buttons.add(load,c);
+        c.gridx = 0;
+        c.gridwidth = 2;
+        c.gridy = 3;
+        c.gridheight = 1;
+        buttons.add(help,c);
 
         buttons.setOpaque(false);
         background.add(buttons,BorderLayout.CENTER);

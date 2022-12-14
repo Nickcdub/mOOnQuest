@@ -30,6 +30,6 @@ public class RedDragon extends Guardian {
     public String ultimate(final Character theDefender) {
         //If our random value is not within our chance range, do nothing, the hit misses
         if (Math.random() < getMyUltChance()) return getMyName() + " Missed Incinerate...\n";
-        return "Incinerate! " + (theDefender.damage(70));
+        return "Incinerate! " + (theDefender.damage(85));
     }
 }
