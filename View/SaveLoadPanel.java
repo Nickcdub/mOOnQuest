@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class SaveLoadPanel extends JPanel {
 
-    public SaveLoadPanel(final int theWidth, final int theHeight) throws IOException {
+    SaveLoadPanel(final int theWidth, final int theHeight) throws IOException {
         //Our background will be the same as InventoryPanel
         ImagePanel background = new ImagePanel(ImageIO.read(new File("Inventory.png")));
         JPanel center = new JPanel();

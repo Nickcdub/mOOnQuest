@@ -67,6 +67,14 @@ public abstract class Hero extends SpecialCharacter implements Blockable {
         myPillarCount = 0;
     }
 
+    public void setGod(){
+        myBlockChance = 1;
+        setMyDmg(500000,450000);
+        setMyMaxHealth(500000);
+        setMyUltChance(1);
+        setMyHitChance(1);
+    }
+
     public String toString() {
         return "CLASS:" + getMyName() + " HP:" + getHealth() + "/" + getMaxHealth() + " SPEED:" + getMyAttackSpeed() + " ACCURACY:" + getMyHitChance() + " PROTECTION:" + myBlockChance;
     }

@@ -46,6 +46,13 @@ public class GameFrame extends JFrame {
         setVisible(true);
     }
 
+    public void helpPanel(){
+        clearPanels();
+        HelpPanel help = new HelpPanel();
+        MAIN_PANEL.add(help, BorderLayout.CENTER);
+        setVisible(true);
+    }
+
     public void showMap(final Maze theMaze, final Hero theHero, final StringBuilder theBuilder) throws IOException {
         clearPanels();
         final MapPanel myMap = new MapPanel(theMaze, 400, theHero, theBuilder);

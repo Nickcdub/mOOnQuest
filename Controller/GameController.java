@@ -10,12 +10,8 @@ import com.google.gson.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-//import java.io.FileReader;
-//import java.io.FileWriter;
 import java.io.*;
 import java.lang.reflect.Type;
-//import java.io.IOException;
-//import java.io.PrintStream;
 import java.sql.SQLException;
 
 public class GameController {
@@ -59,6 +55,7 @@ public class GameController {
             traverse();
         } else {
             IntroInput.myInput = 0;
+            help();
             intro();
         }
     }
@@ -129,14 +126,14 @@ public class GameController {
                     InventoryInput.input = false;
                 }
                 case "Save" -> save();
-                //case "Help"
+                case "Help" -> help();
             }
             MoveInput.myMove = null;
             myFrame.showMap(myMaze, myHero, travelLog);
 
-            if (myHero.getHealth() <= 0)
+            if (myHero.getHealth() <= 0) {
                 death("You hit a trap and lacked the energy to escape, you fell unconscious...");
-            if (myMaze.getEnemy() != null) {
+            }else if (myMaze.getEnemy() != null) {
                 System.out.println("Defeated a " + myMaze.getEnemy().getMyName());
                 battle(myMaze.popEnemy());
             } else if (myMaze.getBoss() != null) {
@@ -161,6 +158,14 @@ public class GameController {
             myMazeWriter.flush();
         }
         SaveInput.myInput = 0;
+    }
+
+    private static void help() throws InterruptedException {
+        myFrame.helpPanel();
+        do {
+            Thread.sleep(200);
+        } while (HelpInput.myInput == 0);
+        HelpInput.myInput = 0;
     }
 
     //Character can not pass data using its getters, so we need to overload battle for Monsters and Guardians.
@@ -337,6 +342,7 @@ public class GameController {
             switch (name) {
                 case "New Game" -> myInput = 1;
                 case "Load Save" -> myInput = 2;
+                case "Help" -> myInput = 3;
             }
         }
     }
@@ -353,6 +359,13 @@ public class GameController {
                 case "Save 3" -> myInput = 3;
                 case "Back" -> myInput = 4;
             }
+        }
+    }
+
+    public static class HelpInput implements  ActionListener {
+        private static int myInput;
+        public void actionPerformed(ActionEvent e){
+            myInput = 1;
         }
     }
 
@@ -439,9 +452,9 @@ public class GameController {
                     System.out.println(myHero.ultimate(myDefender));
                     myAttack = true;
                 }
-                case "Cheats" -> {
-                    System.out.println("Combat Skip!\n");
-                    myDefender.damage(500);
+                case "God Mode" -> {
+                    System.out.println("God Mode Activated!");
+                    myHero.setGod();
                     myAttack = true;
                 }
                 case "Inventory" -> myInventory = true;
@@ -524,9 +537,9 @@ public class GameController {
     // This class was created to handle serialization for the abstract hero and guardian classes (they couldn't be instantiated otherwise)
     class HeroAdapter implements JsonDeserializer<Hero> {
         @Override
-        public Hero deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+        public Hero deserialize(final JsonElement theJsonElement, final Type theType, final JsonDeserializationContext theJsonDeserializationContext) throws JsonParseException {
             try {
-                String contents = jsonElement.toString();
+                String contents = theJsonElement.toString();
                 if (contents.contains("KNIGHT")) {
                     myHero = myGson.fromJson(contents, Knight.class);
                 }
@@ -546,9 +559,9 @@ public class GameController {
 
     class GuardianAdapter implements JsonDeserializer<Guardian> {
         @Override
-        public Guardian deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+        public Guardian deserialize(final JsonElement theJsonElement, final Type theType, final JsonDeserializationContext theJsonDeserializationContext) throws JsonParseException {
             try {
-                String contents = jsonElement.toString();
+                String contents = theJsonElement.toString();
                 if (contents.contains("CERBERUS")) {
                     return new Cerberus();
                 }

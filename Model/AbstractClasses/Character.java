@@ -80,8 +80,20 @@ public abstract class Character{
         return myMaxDmg;
     }
 
-    protected void setMyHitPoints(int myHitPoints) {
-        this.myHitPoints = myHitPoints;
+    protected void setMyDmg(final int theMaxDmg,final int theMinDmg){
+        myMaxDmg = theMaxDmg;
+        myMinDmg = theMinDmg;
     }
 
+    protected void setMyHitPoints(final int theHitPoints) {
+        this.myHitPoints = theHitPoints;
+    }
+
+    protected void setMyMaxHealth(final int theMax){
+        myMaxHealth = theMax;
+    }
+
+    protected void setMyHitChance(final float theChance){
+        myHitChance = theChance;
+    }
 }

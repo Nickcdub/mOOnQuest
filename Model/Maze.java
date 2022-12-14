@@ -92,7 +92,7 @@ public class Maze {
     }
 
     //This method will fill the myGrid with default regions
-    private void initializeGrid(List<Region> theGrid) {
+    private void initializeGrid(final List<Region> theGrid) {
         for (int i = 0; i < myRows; i++) {
             for (int j = 0; j < myCols; j++) {
                 theGrid.add(new Region(i, j));
@@ -234,18 +234,22 @@ public class Maze {
     public boolean[] getRegionWalls(final int theRow, final int theCol) {
         return getRegion(theRow, theCol).WALLS;
     }
+
     public boolean getRegionGuardian(final int theRow, final int theCol){
         return getRegion(theRow, theCol).myGuardian;
     }
     public boolean getRegionMonster(final int theRow, final int theCol){
         return getRegion(theRow,theCol).myMonster;
     }
+
     public boolean getRegionTrap(final int theRow, final int theCol){
         return getRegion(theRow,theCol).myTrap;
     }
+
     public boolean getRegionPotion(final int theRow, final int theCol){
         return getRegion(theRow,theCol).myPotion;
     }
+
     public boolean getRegionVisibility(final int theRow, final int theCol) {
         return getRegion(theRow,theCol).myVisible ;
     }
