@@ -67,7 +67,10 @@ public class GameController {
         } while (SaveInput.myInput == 0);
         //Check to make sure file has a save, if not, just go to characterselect()
         File check = new File("maze" + SaveInput.myInput + ".txt");
-        if(check.length() == 0) characterSelect();
+        if(check.length() == 0) {
+            SaveInput.myInput = 0;
+            characterSelect();
+        }
         else {
             try {
                 myMazeReader = new FileReader("maze" + SaveInput.myInput + ".txt");
