@@ -9,6 +9,7 @@ public class HealthPotion extends Item {
     }
 
     public String useEffect(Hero theHero) {
+        //Heal the hero
         return theHero.heal(60,40);
     }
 }

@@ -3,6 +3,7 @@ package Model;
 import Model.AbstractClasses.Guardian;
 import Model.AbstractClasses.Hero;
 
+import java.io.BufferedReader;
 import java.sql.*;
 import java.util.*;
 
@@ -178,6 +179,8 @@ public class Maze {
         blocked.clearRoom();
         blocked.myGuardian = true;
     }
+
+    //We need this to tell controller if a certain direction is possible
     public String getPath(){
         boolean[] walls = getRegion(myLocation[0], myLocation[1]).WALLS;
         StringBuilder st = new StringBuilder();
@@ -189,10 +192,11 @@ public class Maze {
         return st.toString();
     }
 
-    public void move(final String theDirection) throws SQLException {
+    //Move the hero in a direction, DO NOT ASSUME THAT INPUT IS CORRECT!
+    public String move(final String theDirection) throws SQLException {
         Region newRoom;
 
-
+        //Update location
         switch (theDirection){
             case "EAST" ->{
                 if(index(myLocation[0], myLocation[1]+1)==-1) throw new IndexOutOfBoundsException("Controller should not read in EAST if EAST is not an option, Location: "+(myLocation[0])+","+(myLocation[1]+1));
@@ -212,12 +216,14 @@ public class Maze {
             }
             default ->throw new IllegalArgumentException("There are 4 possible Directions: NORTH, SOUTH, EAST, WEST. Input: "+theDirection);
         }
+        //check if new room has stuff
         newRoom = getRegion(myLocation[0], myLocation[1]);
         getRegion(myLocation[0], myLocation[1]).myVisible = true;
         if(!newRoom.hasLoot()) {
             myEnemy = null;
             myBoss = null;
-        }else newRoom.loot();
+        }else return newRoom.loot();
+        return "Error! this should not be reached";
     }
 
     /*
@@ -270,6 +276,7 @@ public class Maze {
         return myEnemy;
     }
 
+    //fast way to remove enemy
     public Monster popEnemy(){
         Monster enemy = myEnemy;
         myEnemy = null;
@@ -280,12 +287,14 @@ public class Maze {
         return myBoss;
     }
 
+    //fast way to remove boss
     public Guardian popBoss(){
         Guardian boss = myBoss;
         myBoss = null;
         return boss;
     }
 
+    //For vision potion to reveal the adjacent areas
     String revealArea(){
         int areaCount = 0;
         for (int i = getHeroLocation()[0]-1; i <= getHeroLocation()[0]+1 ; i++) {
@@ -347,13 +356,17 @@ public class Maze {
             return myLoot;
         }
 
+        //Needed for entrance and boss rooms
         private void clearRoom(){
             myPotion = false;
             myTrap = false;
             myMonster = false;
         }
 
-        private void loot() throws SQLException {
+        //Return a string to give move to give controller to give view :)
+        private String loot() throws SQLException {
+            //Build string why checking for items and enemies
+            StringBuilder sb = new StringBuilder();
             myLoot = false;
 
             if(myGuardian){
@@ -363,14 +376,15 @@ public class Maze {
             }
 
             if(myPotion) {
-                myHero.getInventory().addItem(Math.random() < 0.85 ? new HealthPotion() : new VisionPotion());
+                sb.append(myHero.getInventory().addItem(Math.random() < 0.85 ? new HealthPotion() : new VisionPotion())+"\n");
                 myPotion = false;
             }
 
+            //Special case: the trap could kill the hero, if it does, return and let controller deal with it
             if(myTrap){
-                myHero.trap(20);
+                sb.append(myHero.trap(20)+"\n");
                 myTrap = false;
-                if(myHero.getHealth()<0) return;
+                if(myHero.getHealth()<0) return sb.toString();
             }
 
             if(myMonster){
@@ -380,7 +394,7 @@ public class Maze {
                 else if(type<myGoblinChance+myWolfChance) myEnemy = new Monster(DIREWOLF);
                 else if(type>1-myOgreChance) myEnemy = new Monster(OGRE);
             }
-
+            return sb.toString();
         }
 
         //This private method: randomNeighbor method will give generator a random region to mark as next

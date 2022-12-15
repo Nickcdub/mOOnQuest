@@ -14,9 +14,9 @@ public class Inventory {
         INVENTORY.put("Vision Potion", 0);
     }
 
-    public void addItem(final Item theItem) {
+    public String addItem(final Item theItem) {
         INVENTORY.put(theItem.toString(), INVENTORY.get(theItem.toString()) + 1);
-        System.out.println(theItem+" added to Inventory!");
+        return theItem+" added to Inventory!";
     }
 
     public void removeItem(final String theItem) {

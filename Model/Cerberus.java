@@ -34,6 +34,7 @@ public class Cerberus extends Guardian implements Blockable {
         connection.close();
     }
 
+    //Cerberus' ultimate does medium damage
     @Override
     public String ultimate(final Character theDefender) {
         //If our random value is not within our chance range, do nothing, the hit misses
@@ -44,12 +45,15 @@ public class Cerberus extends Guardian implements Blockable {
 
     }
 
+    //Override damage for Cerberus to include block
+    @Override
     public String damage(final int theDamage) {
         int result = block(theDamage);
         setMyHitPoints( getHealth() - result);
         return result == 0 ? getMyName() + " blocked all incoming damage!\n" : getMyName() + " took " + theDamage + " damage!\n";
     }
 
+    //Cerberus' passive block ability
     @Override
     public int block(final int theDamage) {
         return Math.random() <= myBlockChance ? 0 : theDamage;

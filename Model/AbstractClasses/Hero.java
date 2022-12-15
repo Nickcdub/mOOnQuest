@@ -20,23 +20,26 @@ public abstract class Hero extends SpecialCharacter implements Blockable {
         myPillarCount = 0;
     }
 
-
+    //Heroes have a chance of blocking before taking damage
     public String damage(final int theDamage) {
         int result = block(theDamage);
         setMyHitPoints( getHealth() - result);
         return result == 0 ? getMyName() + " blocked all incoming damage!\n" : getMyName() + " took " + theDamage + " damage!\n";
     }
 
+    //Heroes block
     @Override
     public int block(final int theDamage) {
         return Math.random() <= myBlockChance ? 0 : theDamage;
     }
 
-    public void trap(final int theDamage){
+    //return string so that we don't have to output
+    public String trap(final int theDamage){
         setMyHitPoints(getHealth() - theDamage);
-        System.out.println(getMyName()+" was ensnared by a trap and took "+theDamage+" damage!");
+       return getMyName()+" was ensnared by a trap and took "+theDamage+" damage!";
     }
 
+    //Heroes can heal
     public String heal(final int theMax, final int theMin) {
         Random r = new Random();
         int result = r.nextInt(theMax - theMin) + theMin;
@@ -46,17 +49,15 @@ public abstract class Hero extends SpecialCharacter implements Blockable {
         return getHealth() == getMaxHealth() ? getMyName() + " healed to Max Health!\n" : getMyName() + " healed for " + result + " HP!\n";
     }
 
+    //Load block chance along with all the inherited traits from special character
     protected void loadHero(final ResultSet theRS) throws SQLException {
         super.loadSpecialCharacter(theRS);
         myBlockChance = theRS.getFloat("BLOCKCHANCE");
     }
 
+    //Use this info to check if the hero has killed all four bosses
     public void addPillar(){
         myPillarCount++;
-    }
-
-    public Inventory getInventory() {
-        return INVENTORY;
     }
 
     public int getPillarCount(){
@@ -67,6 +68,11 @@ public abstract class Hero extends SpecialCharacter implements Blockable {
         myPillarCount = 0;
     }
 
+    public Inventory getInventory() {
+        return INVENTORY;
+    }
+
+    //Important for setting cheats for hero
     public void setGod(){
         myBlockChance = 1;
         setMyDmg(500000,450000);

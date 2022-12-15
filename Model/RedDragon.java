@@ -26,6 +26,7 @@ public class RedDragon extends Guardian {
         connection.close();
     }
 
+    //Red dragons ultimate is high damage attack
     @Override
     public String ultimate(final Character theDefender) {
         //If our random value is not within our chance range, do nothing, the hit misses

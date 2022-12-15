@@ -13,6 +13,7 @@ public class Hydra extends Guardian implements Healable {
         loadHydra();
     }
 
+
     private void loadHydra() throws SQLException {
         String jdbcURL = "jdbc:sqlite:DungeonAdventure.sqlite";
 
@@ -39,8 +40,9 @@ public class Hydra extends Guardian implements Healable {
         return getHealth() == getMaxHealth() ? getMyName() + " healed to Max Health!\n" : getMyName() + " healed for " + result + " HP!\n";
     }
 
+    //Hydra's ultimate is a heal
     @Override
     public String ultimate(final Character theDefender) {
-        return heal(80, 40);
+        return heal(100, 40);
     }
 }

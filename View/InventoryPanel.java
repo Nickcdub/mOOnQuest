@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+
 public class InventoryPanel extends JPanel {
 
     InventoryPanel(final Hero theHero) throws IOException {
@@ -21,6 +22,7 @@ public class InventoryPanel extends JPanel {
         back.setName("back");
         back.addActionListener(new GameController.InventoryInput());
 
+        //Only add items to the inventory if we have them
         if(inventory.getItem("Health Potion")>0){
             BufferedImage buttonIcon = ImageIO.read(new File("HealthPotion.png"));
             ImageIcon img = new ImageIcon(buttonIcon);
@@ -47,6 +49,7 @@ public class InventoryPanel extends JPanel {
         add(background);
     }
 
+    //Add button images to the Inventory panel
     private void addItem(final JPanel thePanel, final JButton theItemButton) {
         theItemButton.setBorder(BorderFactory.createEmptyBorder());
         theItemButton.setContentAreaFilled(false);

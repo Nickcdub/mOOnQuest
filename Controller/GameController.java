@@ -15,10 +15,12 @@ import java.lang.reflect.Type;
 import java.sql.SQLException;
 
 public class GameController {
-
+    //These are necessary for the playing of the game
     private static Hero myHero;
     private static Maze myMaze;
     private static GameFrame myFrame;
+
+    //These are for serialization
     private static Gson myGson;
     private static FileWriter myMazeWriter;
     private static FileReader myMazeReader;
@@ -31,10 +33,11 @@ public class GameController {
                 .registerTypeAdapter(Guardian.class, new GuardianAdapter()) //abstract
                 .excludeFieldsWithModifiers(java.lang.reflect.Modifier.TRANSIENT) //required to handle static variables
                 .create();
-        intro();
+        intro(); //Start at the intro panel
     }
 
     private static void intro() throws SQLException, IOException, InterruptedException {
+        //Reset the hero and the maze
         myHero = null;
         myMaze = null;
         //Game can be replayed after death or win, don't open a new frame if that's the case
@@ -42,45 +45,44 @@ public class GameController {
             myFrame = new GameFrame(1000, 1000);
             myFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         }
+        //Launch panel and wait for response
         myFrame.introPanel();
         do {
             Thread.sleep(200);
         } while (IntroInput.myInput == 0);
-        if (IntroInput.myInput == 1) {
-            IntroInput.myInput = 0;
-            characterSelect();
-        } else if (IntroInput.myInput == 2) {
-            IntroInput.myInput = 0;
-            load();
-            traverse();
-        } else {
-            IntroInput.myInput = 0;
-            help();
-            intro();
+
+        //Make response so we can make IntroInput 0
+        int response = IntroInput.myInput;
+        IntroInput.myInput = 0;
+        switch (response) {
+            case 1 -> characterSelect();
+            case 2 -> load();
+            default -> {
+                help();
+                intro();
+            }
         }
     }
 
     private static void load() throws IOException, InterruptedException, SQLException {
-        myFrame.savePanel();
+        myFrame.savePanel(false);
         do {
             Thread.sleep(200);
         } while (SaveInput.myInput == 0);
-        //Check to make sure file has a save, if not, just go to characterselect()
-        File check = new File("maze" + SaveInput.myInput + ".txt");
-        if(check.length() == 0) {
-            SaveInput.myInput = 0;
-            characterSelect();
-        }
-        else {
-            try {
-                myMazeReader = new FileReader("maze" + SaveInput.myInput + ".txt");
-                SaveInput.myInput = 0;
-                myMaze = myGson.fromJson(myMazeReader, Maze.class);
-            } catch (Exception e) {
-                System.out.println(e);
-            }
+
+        int response = SaveInput.myInput;
+        SaveInput.myInput = 0;
+        if(response>3) intro();
+        //read in file and update maze
+        try {
+            myMazeReader = new FileReader("maze" + response + ".txt");
+            myMaze = myGson.fromJson(myMazeReader, Maze.class);
+            traverse();
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
+
 
     private static void characterSelect() throws SQLException, IOException, InterruptedException {
 
@@ -89,7 +91,6 @@ public class GameController {
         do {
             Thread.sleep(200);
         } while (myHero == null);
-        System.out.println(myHero + "\n");
         difficultySelect();
     }
 
@@ -113,14 +114,16 @@ public class GameController {
         //Keep playing the game until all pillars are collected and the player returns to entrance
         while (myHero.getPillarCount() != 4 || myMaze.getHeroLocation()[0] + myMaze.getHeroLocation()[1] != 0) {
             System.setOut(ps);
+            //Wait for user input
             do {
                 Thread.sleep(200);
             } while (MoveInput.myMove == null);
+            //Apply appropriate logic to input
             switch (MoveInput.myMove) {
-                case "North" -> myMaze.move("NORTH");
-                case "West" -> myMaze.move("WEST");
-                case "East" -> myMaze.move("EAST");
-                case "South" -> myMaze.move("SOUTH");
+                case "North" -> travelLog.append(myMaze.move("NORTH"));
+                case "West" -> travelLog.append(myMaze.move("WEST"));
+                case "East" -> travelLog.append(myMaze.move("EAST"));
+                case "South" -> travelLog.append(myMaze.move("SOUTH"));
                 case "Inventory" -> {
                     myFrame.inventoryPanel(myHero);
                     do {
@@ -132,11 +135,13 @@ public class GameController {
                 case "Help" -> help();
             }
             MoveInput.myMove = null;
+            //Update frame as often as possible
             myFrame.showMap(myMaze, myHero, travelLog);
 
+            //Check for death, enemy to fight, boss to fight
             if (myHero.getHealth() <= 0) {
                 death("You hit a trap and lacked the energy to escape, you fell unconscious...");
-            }else if (myMaze.getEnemy() != null) {
+            } else if (myMaze.getEnemy() != null) {
                 System.out.println("Defeated a " + myMaze.getEnemy().getMyName());
                 battle(myMaze.popEnemy());
             } else if (myMaze.getBoss() != null) {
@@ -146,15 +151,18 @@ public class GameController {
             }
             myFrame.showMap(myMaze, myHero, travelLog);
         }
+        //while loop broken, we won
         win();
     }
 
     private static void save() throws IOException, InterruptedException {
-        myFrame.savePanel();
+        //load save panel and wait for input
+        myFrame.savePanel(true);
         do {
             Thread.sleep(200);
         } while (SaveInput.myInput == 0);
-        if(SaveInput.myInput < 4) {
+        //input below 4 is a save button, after that is the button to go back
+        if (SaveInput.myInput < 4) {
             myMazeWriter = new FileWriter("maze" + SaveInput.myInput + ".txt", false);
             //Initialize the FileWriter here because setting the false flag will clear the file
             myGson.toJson(myMaze, myMazeWriter);
@@ -164,6 +172,7 @@ public class GameController {
     }
 
     private static void help() throws InterruptedException {
+        //Wait for input, only possible input is back
         myFrame.helpPanel();
         do {
             Thread.sleep(200);
@@ -300,6 +309,7 @@ public class GameController {
     }
 
     private static void death(final String theMessage) throws SQLException, IOException, InterruptedException {
+        //load frame wait for input
         myFrame.deathPanel(theMessage);
         do {
             Thread.sleep(200);
@@ -318,6 +328,7 @@ public class GameController {
         do {
             Thread.sleep(200);
         } while (WinInput.input == 0);
+        //case 1, clear pillars and reset maze to play the game again.
         switch (WinInput.input) {
             case 1 -> {
                 WinInput.input = 0;
@@ -331,10 +342,23 @@ public class GameController {
 
     private static void exit() throws IOException {
         //Prevent null pointers
-        if(myMazeReader!=null)myMazeReader.close();
-       if(myMazeWriter!=null) myMazeWriter.close();
+        if (myMazeReader != null) myMazeReader.close();
+        if (myMazeWriter != null) myMazeWriter.close();
         System.exit(0);
     }
+
+
+
+    /*
+    *
+    * KeyListeners
+    * The listeners cannot initiate other panels while the controller is waiting for a response.
+    * Pass back a value that correlates with a desired response to the input
+    *
+    *
+     */
+
+
 
     public static class IntroInput implements ActionListener {
 
@@ -365,9 +389,10 @@ public class GameController {
         }
     }
 
-    public static class HelpInput implements  ActionListener {
+    public static class HelpInput implements ActionListener {
         private static int myInput;
-        public void actionPerformed(ActionEvent e){
+
+        public void actionPerformed(ActionEvent e) {
             myInput = 1;
         }
     }
@@ -537,7 +562,7 @@ public class GameController {
         }
     }
 
-    // This class was created to handle serialization for the abstract hero and guardian classes (they couldn't be instantiated otherwise)
+    // These classes was created to handle serialization for the abstract hero and guardian classes (they couldn't be instantiated otherwise)
     class HeroAdapter implements JsonDeserializer<Hero> {
         @Override
         public Hero deserialize(final JsonElement theJsonElement, final Type theType, final JsonDeserializationContext theJsonDeserializationContext) throws JsonParseException {

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.Random;
 
 public abstract class Character{
-   //Necessary info for the 
+   //All characters have these basic essentials
     private String myName;
     private int myHitPoints;
     private int myMaxHealth;
@@ -16,6 +16,7 @@ public abstract class Character{
     private int myMinDmg;
     private int myMaxDmg;
 
+    //Instantiate fields and let children classes use getters and setters
     protected Character(){
         myName = null;
         myHitPoints = 0;

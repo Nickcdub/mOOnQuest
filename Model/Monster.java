@@ -27,18 +27,21 @@ public class Monster extends Character implements Healable{
         connection.close();
     }
 
+    //load heal chance and regeneration on top of basic character stuff
     private void loadStats(final ResultSet theRS) throws SQLException {
         loadCharacter(theRS);
         myHealChance = theRS.getFloat("HEALCHANCE");
         myRegeneration = theRS.getInt("REGENERATION");
     }
 
+    //Monsters take damage straight out, no block here.
     @Override
     public String damage(final int theDamage) {
         setMyHitPoints( getHealth() - theDamage);
         return getMyName() + " took " + theDamage + " damage.\n";
     }
 
+    //healing is a fixed amount for monster, they either heal or they don't
     @Override
     public String heal() {
         //Is this monster lucky enough to heal? if it is, it regenerates health, if not, recover = 0

@@ -11,6 +11,7 @@ import java.io.IOException;
 public class DeathPanel extends JPanel {
 
     DeathPanel(final String theMessage, final int theWidth, final int theHeight) throws IOException {
+
         ImagePanel grave = new ImagePanel(ImageIO.read(new File("Graveyard.png")));
         JPanel emptyCenter = new JPanel();
         JPanel south = new JPanel(new GridLayout(2,1));

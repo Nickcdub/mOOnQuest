@@ -28,6 +28,7 @@ public class DifficultyPanel extends JPanel {
         line3.setPreferredSize(new Dimension(getWidth()/5,getHeight()/5));
         line4.setPreferredSize(new Dimension(getWidth()/5,getHeight()/5));
 
+        //We want font to be more legible
         line1.setFont(new Font("Serif",Font.BOLD,24));
         line2.setFont(new Font("Serif",Font.BOLD,24));
         line3.setFont(new Font("Serif",Font.BOLD,24));

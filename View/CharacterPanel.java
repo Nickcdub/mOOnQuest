@@ -32,12 +32,14 @@ public class CharacterPanel extends JPanel{
         pedestal();
     }
 
+    //The character image will stand on this block, it will display information or buttons
     private void pedestal(){
         PEDESTAL.setBackground(COLOR);
         PEDESTAL.setPreferredSize(new Dimension(MY_WIDTH,MY_HEIGHT/5));
         add(PEDESTAL, BorderLayout.SOUTH);
     }
 
+    //create image of character with desired background
     private void image() throws IOException {
         JPanel png = new JPanel();
         if(BACKGROUND !=null) png.setBackground(BACKGROUND);
@@ -48,6 +50,7 @@ public class CharacterPanel extends JPanel{
         add(png);
     }
 
+    //If this is character select, make button for pedestal
     public void setSelection(){
         PEDESTAL.setLayout(new GridBagLayout());
         JButton select = new JButton(CHARACTER.getMyName());
@@ -57,6 +60,7 @@ public class CharacterPanel extends JPanel{
         PEDESTAL.add(select);
     }
 
+    //If this is battle, add stats to pedestal
     public void setStats(){
         PEDESTAL.setLayout(new FlowLayout(FlowLayout.CENTER));
 
@@ -82,7 +86,7 @@ public class CharacterPanel extends JPanel{
         center.add(damage);
         PEDESTAL.add(center);
     }
-
+    //Used to pass along model data to key listener
     public Character getCharacter(){
         return CHARACTER;
     }

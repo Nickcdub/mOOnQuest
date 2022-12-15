@@ -39,9 +39,9 @@ public class GameFrame extends JFrame {
         setVisible(true);
     }
 
-    public void savePanel() throws IOException {
+    public void savePanel(final boolean theDisplayEmptyButtons) throws IOException {
         clearPanels();
-        SaveLoadPanel save = new SaveLoadPanel(MY_WIDTH,MY_HEIGHT);
+        SaveLoadPanel save = new SaveLoadPanel(MY_WIDTH,MY_HEIGHT,theDisplayEmptyButtons);
         MAIN_PANEL.add(save, BorderLayout.CENTER);
         setVisible(true);
     }
