@@ -59,7 +59,7 @@ public class Maze {
         myBossList.add(new Cerberus());
         myBossList.add(new Hydra());
         myBossList.add(new RedDragon());
-        myBossList.add(new Tom());
+        myBossList.add(new Moon_Demon());
         myPlaceHolder = 0;
 
         String jdbcURL = "jdbc:sqlite:DungeonAdventure.sqlite";
@@ -222,8 +222,8 @@ public class Maze {
         if(!newRoom.hasLoot()) {
             myEnemy = null;
             myBoss = null;
+            return "";
         }else return newRoom.loot();
-        return "Error! this should not be reached";
     }
 
     /*

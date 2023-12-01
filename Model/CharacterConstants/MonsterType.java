@@ -1,7 +1,5 @@
 package Model.CharacterConstants;
 
 public enum MonsterType {
-    OGRE,
-    DIREWOLF,
-    GOBLIN
+    OGRE, DIREWOLF, GOBLIN
 }

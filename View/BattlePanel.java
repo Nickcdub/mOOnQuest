@@ -33,7 +33,8 @@ public class BattlePanel extends JPanel {
         var cheats = new JButton("God Mode");
 
         //add action listener
-        attack.addActionListener(new GameController.BattleInput(theDefender.getCharacter()));
+        attack.addActionListener(new GameController.BattleInput(theDefender
+                .getCharacter()));
         special.addActionListener(new GameController.BattleInput(theDefender.getCharacter()));
         inventory.addActionListener(new GameController.BattleInput(theDefender.getCharacter()));
         cheats.addActionListener(new GameController.BattleInput(theDefender.getCharacter()));

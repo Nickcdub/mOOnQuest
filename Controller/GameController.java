@@ -599,8 +599,8 @@ public class GameController {
                 if (contents.contains("HYDRA")) {
                     return new Hydra();
                 }
-                if (contents.contains("TOM")) {
-                    return new Tom();
+                if (contents.contains("MOON_DEMON")) {
+                    return new Moon_Demon();
                 }
                 return null;
             } catch (Exception e) {

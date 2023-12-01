@@ -6,15 +6,15 @@ import Model.AbstractClasses.Guardian;
 import java.sql.*;
 import java.util.Random;
 
-public class Tom extends Guardian {
+public class Moon_Demon extends Guardian {
 
     //Just load toms stats
-    public Tom() throws SQLException {
-        loadTom();
+    public Moon_Demon() throws SQLException {
+        loadMoon_Demon();
     }
 
     //Load Tom's stats by passing the connection and result set to load guardian
-    private void loadTom() throws SQLException {
+    private void loadMoon_Demon() throws SQLException {
         String jdbcURL = "jdbc:sqlite:DungeonAdventure.sqlite";
 
         Connection connection = DriverManager.getConnection(jdbcURL);
@@ -22,7 +22,7 @@ public class Tom extends Guardian {
         Statement statement = connection.createStatement();
         statement.setQueryTimeout(30);  // set timeout to 30 sec.
 
-        ResultSet rs = statement.executeQuery("SELECT * FROM guardian_table WHERE NAME ='TOM' ");
+        ResultSet rs = statement.executeQuery("SELECT * FROM guardian_table WHERE NAME ='MOON_DEMON' ");
 
         loadGuardian(rs);
 
